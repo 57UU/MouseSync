@@ -54,7 +54,7 @@ public partial class Server : Form
         textBox1.Text = Info.instance.Boardcast_Port.ToString();
         trackBar1.Value = MouseHook.instance.maxCount;
         updateRateLable();
-        MouseHook.addCallback(mouseHandler);
+        MouseHook.addMouseCallback(mouseHandler);
 
     }
     private void mouseHandler(object sender, MSLLHOOKSTRUCT e)

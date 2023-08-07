@@ -62,7 +62,7 @@ public class MouseHook
     }
     private MouseHook() { }
     
-    public static void addCallback(EventHandler<MSLLHOOKSTRUCT> handler)
+    public static void addMouseCallback(EventHandler<MSLLHOOKSTRUCT> handler)
     {
         instance.MouseAction += handler;
     }

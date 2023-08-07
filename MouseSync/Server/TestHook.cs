@@ -24,11 +24,11 @@ namespace MouseSync.Server
 
         private void TestHook_Load(object sender, EventArgs e)
         {
-            MouseHook.addCallback(callback);
+            MouseHook.addMouseCallback(callback);
         }
-        private void callback(object sender, MouseEventArgs e)
+        private void callback(object sender,MSLLHOOKSTRUCT e)
         {
-            richTextBox1.Text += ($"{e.eventNum} at ({e.X}, {e.Y})\n");
+            richTextBox1.Text += ($"{e.flags} at ({e.pt.X}, {e.pt.Y})\n");
         }
 
         private void richTextBox1_TextChanged(object sender, EventArgs e)

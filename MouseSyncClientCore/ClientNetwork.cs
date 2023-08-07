@@ -1,4 +1,4 @@
-﻿using MouseSync.Server;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +11,7 @@ namespace MouseSync.Client;
 
 public class ClientNetwork
 {
+
     public Connection Connection { get; private set; }
     public ClientNetwork(string ip,int port) {
         TcpClient client = new TcpClient();

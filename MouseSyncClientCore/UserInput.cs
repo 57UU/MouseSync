@@ -20,7 +20,7 @@ internal static class UserInput
     {
         sendInputSealed(new INPUT[] {input});
     }
-    private static void sendMouseInput(MOUSEINPUT mouseInput)
+    public static void sendMouseInput(MOUSEINPUT mouseInput)
     {
         INPUT input=new INPUT();
         input.type = InputType.INPUT_MOUSE;
@@ -28,6 +28,14 @@ internal static class UserInput
         input.U = new() {mi=mouseInput };
         sendOneInput(input);
     }
+    public static void sendKeyboardInput(KEYBDINPUT keyboardInput)
+    {
+        INPUT input = new INPUT();
+        input.type = InputType.INPUT_KETBOARD;
+        input.U = new() { ki=keyboardInput };
+        sendOneInput(input);
+    }
+
     [StructLayout(LayoutKind.Sequential)]
     public struct INPUT
     {
