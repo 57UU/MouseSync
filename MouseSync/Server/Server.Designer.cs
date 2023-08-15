@@ -38,11 +38,12 @@
             changeMouseMovingScanRateToolStripMenuItem = new ToolStripMenuItem();
             betaToolStripMenuItem = new ToolStripMenuItem();
             testHookToolStripMenuItem = new ToolStripMenuItem();
+            addToolStripMenuItem = new ToolStripMenuItem();
             errorProvider1 = new ErrorProvider(components);
             listView1 = new ListView();
-            columnHeader1 = new ColumnHeader();
             columnHeader2 = new ColumnHeader();
             columnHeader3 = new ColumnHeader();
+            columnHeader1 = new ColumnHeader();
             splitContainer1 = new SplitContainer();
             label4 = new Label();
             trackBar1 = new TrackBar();
@@ -114,7 +115,7 @@
             // 
             // betaToolStripMenuItem
             // 
-            betaToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { testHookToolStripMenuItem });
+            betaToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { testHookToolStripMenuItem, addToolStripMenuItem });
             betaToolStripMenuItem.Name = "betaToolStripMenuItem";
             betaToolStripMenuItem.Size = new Size(64, 28);
             betaToolStripMenuItem.Text = "Beta";
@@ -122,9 +123,16 @@
             // testHookToolStripMenuItem
             // 
             testHookToolStripMenuItem.Name = "testHookToolStripMenuItem";
-            testHookToolStripMenuItem.Size = new Size(196, 34);
+            testHookToolStripMenuItem.Size = new Size(270, 34);
             testHookToolStripMenuItem.Text = "Test Hook";
             testHookToolStripMenuItem.Click += testHookToolStripMenuItem_Click;
+            // 
+            // addToolStripMenuItem
+            // 
+            addToolStripMenuItem.Name = "addToolStripMenuItem";
+            addToolStripMenuItem.Size = new Size(270, 34);
+            addToolStripMenuItem.Text = "Add";
+            addToolStripMenuItem.Click += addToolStripMenuItem_Click;
             // 
             // errorProvider1
             // 
@@ -133,18 +141,13 @@
             // listView1
             // 
             listView1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            listView1.Columns.AddRange(new ColumnHeader[] { columnHeader1, columnHeader2, columnHeader3 });
+            listView1.Columns.AddRange(new ColumnHeader[] { columnHeader2, columnHeader3, columnHeader1 });
             listView1.Location = new Point(13, 27);
             listView1.Name = "listView1";
             listView1.Size = new Size(1300, 523);
             listView1.TabIndex = 3;
             listView1.UseCompatibleStateImageBehavior = false;
             listView1.View = View.Details;
-            // 
-            // columnHeader1
-            // 
-            columnHeader1.Text = "Number";
-            columnHeader1.Width = 100;
             // 
             // columnHeader2
             // 
@@ -155,6 +158,11 @@
             // 
             columnHeader3.Text = "Resolution";
             columnHeader3.Width = 110;
+            // 
+            // columnHeader1
+            // 
+            columnHeader1.Text = "IP";
+            columnHeader1.Width = 120;
             // 
             // splitContainer1
             // 
@@ -237,6 +245,7 @@
             MainMenuStrip = menuStrip1;
             Name = "Server";
             Text = "Server";
+            FormClosed += Server_FormClosed;
             Load += Server_Load;
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
@@ -264,7 +273,6 @@
         private Label label2;
         private ListView listView1;
         private Button button1;
-        private ColumnHeader columnHeader1;
         private ColumnHeader columnHeader2;
         private ColumnHeader columnHeader3;
         private ToolStripMenuItem betaToolStripMenuItem;
@@ -274,5 +282,7 @@
         private TrackBar trackBar1;
         private Label label3;
         private Label label4;
+        private ToolStripMenuItem addToolStripMenuItem;
+        private ColumnHeader columnHeader1;
     }
 }

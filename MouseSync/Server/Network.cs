@@ -65,17 +65,19 @@ internal class Network
     }
 
 }
-public class SocketServer
+public class NetworkServer
 {
     
     int port;
-    public SocketServer(int port)
+    public ConnectionServer connectionServer { get; private set; }
+    public NetworkServer(int port)
     {
         this.port=port;
     }
-    public async void Start()
+
+    public void Start()
     {
-        try
+/*        try
         {
             TcpListener server = new TcpListener(IPAddress.Any, port);
             server.Start();
@@ -93,7 +95,12 @@ public class SocketServer
         catch (Exception ex)
         {
             Console.WriteLine($"Error: {ex.Message}");
-        }
+        }*/
+        connectionServer = 
+            new(port, conn => { new ClientPC(conn); });
+        connectionServer.OnError += e => Console.Error.WriteLine(e.ToString());
 
     }
+
+
 }

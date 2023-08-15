@@ -1,15 +1,15 @@
-﻿using System;
+﻿using CommonLib;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Net;
-using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WindowsHID;
 
 namespace MouseSync.Server;
 
@@ -17,12 +17,13 @@ public partial class Server : Form
 {
 
     public static Server instance;
-
+    private NetworkServer server = new(Info.instance.Server_Port);
     public Server()
     {
         InitializeComponent();
         instance = this;
     }
+
     List<ClientPC> clients = new List<ClientPC>();
     public readonly object globalLock = new();
     public void addClient(ClientPC pc)
@@ -31,12 +32,28 @@ public partial class Server : Form
         {
             clients.Add(pc);
         }
-        refresh();
+        refreshFromOtherThread();
+    }
+    public void removeClient(ClientPC pc)
+    {
+        lock (globalLock)
+        {
+            clients.Remove(pc);
+        }
+        refreshFromOtherThread();
+    }
+    public void refreshFromOtherThread()
+    {
+        this.Invoke(() =>
+        {
+            refresh();
+        });
     }
     void refresh()
     {
         lock (globalLock)
         {
+            listView1.BeginUpdate();
             listView1.Items.Clear();
             foreach (ClientPC pc in clients)
             {
@@ -46,6 +63,8 @@ public partial class Server : Form
                 item.SubItems.Add(pc.IP);
                 listView1.Items.Add(item);
             }
+            listView1.EndUpdate();
+            label2.Text = $"Device Connected : {clients.Count} Devices";
         }
 
     }
@@ -55,14 +74,15 @@ public partial class Server : Form
         trackBar1.Value = MouseHook.instance.maxCount;
         updateRateLable();
         MouseHook.addMouseCallback(mouseHandler);
+        server.Start();
 
     }
-    private void mouseHandler(object sender, MSLLHOOKSTRUCT e)
+    private void mouseHandler(object sender, MouseAllData e)
     {
 
         foreach (ClientPC pc in clients)
         {
-            pc.sendLocation(e);
+            pc.sendMouse(e);
         }
     }
 
@@ -92,53 +112,21 @@ public partial class Server : Form
     {
         label4.Text = $"Only 1/{MouseHook.instance.maxCount} of move\n event will be sent";
     }
-}
-public class ClientPC
-{
-    public Connection Connection { get; private set; }
-    public ClientPC(string name, string resolution, string iP)
+
+    private void Server_FormClosed(object sender, FormClosedEventArgs e)
     {
-        //only for test
-        Name = name;
-        Resolution = resolution;
-        IP = iP;
-        Server.instance.addClient(this);
-    }
-    public ClientPC(TcpClient tcp)
-    {
-        this.tcp = tcp;
-        this.IP = ((IPEndPoint)(tcp.Client.RemoteEndPoint)).Address.ToString();
-        Server.instance.addClient(this);
-        Connection = new(tcp);
-        Connection.messageHander = received;
+        DisposeResource();
     }
 
-
-    //this is a call back
-    public void received(string msg)
+    private void addToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        var splited = msg.Split(':');
-        if (splited.Length > 0)
-        {
-            if (splited[0] == DataExchange.RESOLUTION)
-            {
-                Resolution = splited[1];
-            }
-            else if (splited[0] == DataExchange.NAME)
-            {
-                Name = splited[1];
-            }
-        }
+        new ClientPC("SB", "1270*720", "127.0.0.1");
     }
-    //send data format: (x:y:mousedata:flags)
-    public void sendLocation(MSLLHOOKSTRUCT e)
+    private void DisposeResource()
     {
-        Connection.send($"{e.pt.X}:{e.pt.Y}:{e.mouseData}:{e.flags}");
+        server.connectionServer.close();
+#if DEBUG
+        ConsoleHelper.FreeConsole();
+#endif
     }
-
-    public string Name { get; set; }
-    public string Resolution { get; set; }
-    public string IP { get; set; }
-    public TcpClient tcp { get; set; }
-
 }

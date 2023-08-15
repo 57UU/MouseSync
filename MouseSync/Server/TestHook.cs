@@ -9,6 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WindowsHID;
 
 namespace MouseSync.Server
 {
@@ -26,9 +27,15 @@ namespace MouseSync.Server
         {
             MouseHook.addMouseCallback(callback);
         }
-        private void callback(object sender,MSLLHOOKSTRUCT e)
+        private void callback(object sender,MouseAllData e)
         {
-            richTextBox1.Text += ($"{e.flags} at ({e.pt.X}, {e.pt.Y})\n");
+            richTextBox1.Text += Utils.format(
+            DataExchange.MOUSE,
+            ((int)e.mouseMessage),
+            e.hookStruct.pt.X,
+            e.hookStruct.pt.Y,
+            e.hookStruct.mouseData
+            )+"\n";
         }
 
         private void richTextBox1_TextChanged(object sender, EventArgs e)

@@ -1,3 +1,5 @@
+using CommonLib;
+
 namespace MouseSync;
 public enum Status { server,client}
 internal static class Program
@@ -10,6 +12,9 @@ internal static class Program
     [STAThread]
     static void Main(string[] args)
     {
+#if DEBUG
+        ConsoleHelper.AllocConsole();
+#endif
         // To customize application configuration such as set high DPI settings or default font,
         // see https://aka.ms/applicationconfiguration.
         ApplicationConfiguration.Initialize();
