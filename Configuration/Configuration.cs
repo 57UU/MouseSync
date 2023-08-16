@@ -24,4 +24,8 @@ public class Config
         }
         return stringBuilder.ToString();
     }
+    public static void Main(string[] args)
+    {
+
+    }
 }

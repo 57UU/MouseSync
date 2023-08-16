@@ -81,7 +81,7 @@
             menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, optionToolStripMenuItem, betaToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(1545, 32);
+            menuStrip1.Size = new Size(1034, 32);
             menuStrip1.TabIndex = 2;
             menuStrip1.Text = "menuStrip1";
             // 
@@ -123,14 +123,14 @@
             // testHookToolStripMenuItem
             // 
             testHookToolStripMenuItem.Name = "testHookToolStripMenuItem";
-            testHookToolStripMenuItem.Size = new Size(270, 34);
+            testHookToolStripMenuItem.Size = new Size(196, 34);
             testHookToolStripMenuItem.Text = "Test Hook";
             testHookToolStripMenuItem.Click += testHookToolStripMenuItem_Click;
             // 
             // addToolStripMenuItem
             // 
             addToolStripMenuItem.Name = "addToolStripMenuItem";
-            addToolStripMenuItem.Size = new Size(270, 34);
+            addToolStripMenuItem.Size = new Size(196, 34);
             addToolStripMenuItem.Text = "Add";
             addToolStripMenuItem.Click += addToolStripMenuItem_Click;
             // 
@@ -144,7 +144,7 @@
             listView1.Columns.AddRange(new ColumnHeader[] { columnHeader2, columnHeader3, columnHeader1 });
             listView1.Location = new Point(13, 27);
             listView1.Name = "listView1";
-            listView1.Size = new Size(1300, 523);
+            listView1.Size = new Size(789, 732);
             listView1.TabIndex = 3;
             listView1.UseCompatibleStateImageBehavior = false;
             listView1.View = View.Details;
@@ -183,9 +183,10 @@
             // 
             splitContainer1.Panel2.Controls.Add(label2);
             splitContainer1.Panel2.Controls.Add(listView1);
-            splitContainer1.Size = new Size(1545, 550);
+            splitContainer1.Size = new Size(1034, 759);
             splitContainer1.SplitterDistance = 216;
             splitContainer1.TabIndex = 4;
+            splitContainer1.SplitterMoved += splitContainer1_SplitterMoved;
             // 
             // label4
             // 
@@ -218,7 +219,7 @@
             // button1
             // 
             button1.Dock = DockStyle.Bottom;
-            button1.Location = new Point(0, 516);
+            button1.Location = new Point(0, 725);
             button1.Name = "button1";
             button1.Size = new Size(216, 34);
             button1.TabIndex = 2;
@@ -239,7 +240,7 @@
             // 
             AutoScaleDimensions = new SizeF(11F, 24F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1545, 582);
+            ClientSize = new Size(1034, 791);
             Controls.Add(splitContainer1);
             Controls.Add(menuStrip1);
             MainMenuStrip = menuStrip1;

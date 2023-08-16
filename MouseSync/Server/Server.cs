@@ -129,4 +129,9 @@ public partial class Server : Form
         ConsoleHelper.FreeConsole();
 #endif
     }
+
+    private void splitContainer1_SplitterMoved(object sender, SplitterEventArgs e)
+    {
+
+    }
 }

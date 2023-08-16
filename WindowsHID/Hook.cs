@@ -156,7 +156,7 @@ public struct POINT
 public struct MSLLHOOKSTRUCT
 {
     public POINT pt;
-    public uint mouseData;//this is type DWORD,32 bit,use ushort to split it
+    public int mouseData;//this is type DWORD,32 bit,use ushort to split it
     //public short highOrderMouseData;
     //public short LowOrderMouseData;
     public uint flags;

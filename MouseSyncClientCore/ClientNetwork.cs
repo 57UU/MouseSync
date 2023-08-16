@@ -68,15 +68,20 @@ public class ClientNetwork
         int button = int.Parse(msg[1]);
         int x = int.Parse(msg[2]);
         int y = int.Parse(msg[3]);
-        var mouseData = uint.Parse(msg[4]);
+        var mouseData = int.Parse(msg[4]);
+        MOUSEINPUT mouseInput = new();
+        mouseInput.dy = y;
+        mouseInput.dx = x;
+        mouseInput.dwFlags = MOUSEEVENTF.MOUSEEVENTF_MOVE;
 
-        if(button==(int)MouseMessagesHook.WM_MOUSEWHEEL) {
+        if (button==(int)MouseMessagesHook.WM_MOUSEWHEEL) {
 #if DEBUG
             LogHandler("Simulate wheel");
 #endif
-            if(isSimulate) {  
-                //InputForMouse.simulate(InputForMouse.Flags.MOUSEEVENTF_WHEEL, x, y,mouseData);
-            }
+            //InputForMouse.simulate(InputForMouse.Flags.MOUSEEVENTF_WHEEL, x, y,mouseData);
+            mouseInput.dwFlags = MOUSEEVENTF.MOUSEEVENTF_WHEEL;
+            mouseInput.mouseData = mouseData>>16;
+
            
         }
         else
@@ -84,12 +89,14 @@ public class ClientNetwork
 #if DEBUG
             LogHandler("simulate btn press");
 #endif
-            if (isSimulate)
-            {
-                //InputForMouse.simulate(DataExchange.MOUSE_KEY_MAP[button], x, y);
-            }
 
-            
+            //InputForMouse.simulate(DataExchange.MOUSE_KEY_MAP[button], x, y);
+            mouseInput.dwFlags = DataExchange.MOUSE_KEY_MAP[button];
+
+        }
+        if(isSimulate)
+        {
+            Input.sendMouseInput(mouseInput);
         }
         
 
@@ -101,7 +108,7 @@ public class ClientNetwork
 
         int x= int.Parse(msg[2]);
         int y= int.Parse(msg[3]);
-        int mouseData= int.Parse(msg[4]);
+        var mouseData= int.Parse(msg[4]);
         MOUSEINPUT mouse_input=new MOUSEINPUT();
         mouse_input.dy = y;
         mouse_input.dx = x; 

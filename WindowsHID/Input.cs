@@ -11,8 +11,8 @@ namespace WindowsHID;
 public static class InputForMouse
 {
     [DllImport("user32")]
-    private static extern int mouse_event(uint dwFlags, uint dx, uint dy, uint mouseData, IntPtr dwExtraInfo);
-    private static int mouse_event(Flags flags, uint x, uint y,uint data=0)
+    private static extern int mouse_event(uint dwFlags, int dx, int dy, uint mouseData, IntPtr dwExtraInfo);
+    private static int mouse_event(Flags flags, int x, int y,uint data=0)
     {
         return mouse_event((uint)(flags |Flags.MOUSEEVENTF_ABSOLUTE), x, y,data,0);
     }
@@ -29,7 +29,7 @@ public static class InputForMouse
         MOUSEEVENTF_ABSOLUTE = 0x8000,// 标示是否采用绝对坐标
         MOUSEEVENTF_WHEEL=0x0800,
     }
-    public static void simulate(Flags flags, uint x, uint y,uint data=0)
+    public static void simulate(Flags flags, int x, int y,uint data=0)
     {
         mouse_event(flags, x, y,data);
     }
@@ -73,7 +73,8 @@ public static class Input
     private static extern uint SendInput(uint nInputs, INPUT[] pInputs, int cbSize);
     private static void sendInputSealed(INPUT[] inputs)
     {
-        SendInput((uint)inputs.Length, inputs,INPUT.Size);
+        
+        SendInput((uint)inputs.Length,inputs,INPUT.Size);
     }
     private static void sendOneInput(INPUT input)
     {
@@ -83,9 +84,18 @@ public static class Input
     {
         INPUT input=new INPUT();
         input.type = InputType.INPUT_MOUSE;
+        convertLocation(ref mouseInput);
         mouseInput.dwFlags = mouseInput.dwFlags | MOUSEEVENTF.MOUSEEVENTF_ABSOLUTE;
         input.U = new() {mi=mouseInput };
         sendOneInput(input);
+    }
+    public const int max = 65535;
+    public static void convertLocation(ref MOUSEINPUT mouseInput)
+    {
+        int width = Device.width;
+        int height = Device.height;
+        mouseInput.dx = (int)(mouseInput.dx / (float)width * max);
+        mouseInput.dy = (int)(mouseInput.dy/(float)height*max);
     }
     public static void sendKeyboardInput(KEYBDINPUT keyboardInput)
     {

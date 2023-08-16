@@ -4,10 +4,11 @@
 //Console.WriteLine((uint)123);
 while (true)
 {
-    var sb=Console.ReadLine();
+    var sb = Console.ReadLine();
     var sb2 = sb.Split(" ");
     int x = int.Parse(sb2[0]);
     int y = int.Parse(sb2[1]);
+
     MOUSEINPUT mouseInput = new();
     mouseInput.dy = y;
     mouseInput.dx = x;
