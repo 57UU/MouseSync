@@ -11,13 +11,13 @@ public static class Utils
 
     public static string readFile(string path)
     {
-        try
-        {
+/*        try
+        {*/
             return File.ReadAllText(path);
-        }
-        catch {
+/*        }
+        catch(Exception e) {
             return null;
-        }
+        }*/
         
     }
     public static bool writeFile(string path, string content)

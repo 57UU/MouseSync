@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿//using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +11,10 @@ public class Info
 {
     static Info()
     {
+        //Console.WriteLine("Configuration loading");
         load();
     }
-    private const string CLIENT_SETTING = "Setting.json";
+    private const string CLIENT_SETTING = "Setting.config";
     private Info() { instance = this; }
 
 
@@ -33,16 +34,27 @@ public class Info
         }
     }
     public int Server_Port { get; set; } = 4757;
-    public string Server_IP { get; set; }
+    public string Server_IP { get; set; } = null;
     public int Boardcast_Port { get; set; } = 4756;
     public bool isServerUnset { get { return Server_IP == null; } }
 
-
+    const string ip = "Server_IP";
+    const string port = "Server_Port";
+    const string boardcastPort = "Boardcast_Port";
     public static Exception? save()
     {
         try
         {
-            string text = JsonConvert.SerializeObject(instance);
+            string text=null;
+
+            //text = JsonConvert.SerializeObject(instance);
+            text = Configuration.Config.Serialize(new Dictionary<string, object>
+            {
+                {ip,instance.Server_IP },
+                {port,instance.Server_Port },
+                {boardcastPort,instance.Boardcast_Port}
+            });
+
             Utils.writeFile(CLIENT_SETTING, text);
             return null;
         }
@@ -57,13 +69,26 @@ public class Info
         try
         {
             string text = Utils.readFile(CLIENT_SETTING);
-            Info obj = JsonConvert.DeserializeObject<Info>(text);
-            instance = obj;
+
+            /*            Info obj = JsonConvert.DeserializeObject<Info>(text);
+                        instance = obj;*/
+            new Info();
+            var dict=Configuration.Config.Deserialize(text);
+            instance.Server_IP = dict[ip];
+            instance.Server_Port = int.Parse(dict[port]);
+            instance.Boardcast_Port = int.Parse(dict[boardcastPort]);
+
             return null;
+        }catch(IOException ex)
+        {
+            new Info();
+            save();
+            return ex;
         }
         catch (Exception ex)
         {
             new Info();
+            //save();
             return ex;
         }
 

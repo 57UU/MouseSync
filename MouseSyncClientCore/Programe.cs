@@ -12,17 +12,23 @@ namespace MouseSyncClientCore;
 
 public class Programe
 {
+    private static void setServerIP()
+    {
+            Console.Write("Input Server IP: ");
+            Info.instance.Server_IP = Console.ReadLine();
+
+    }
     //entry point
     public static void Main()
     {
 #if DEBUG
         ConsoleHelper.AllocConsole();
 #endif
-        if (string.IsNullOrEmpty(Info.instance.Server_IP))
-        {
-            Console.Write("Input Server IP: ");
-            Info.instance.Server_IP = Console.ReadLine();
+        if (string.IsNullOrEmpty(Info.instance.Server_IP)) {
+            setServerIP();
         }
+            
+
         Console.WriteLine("Try Connecting to "+Info.instance.Server_IP_Port);
         
         while (true)
@@ -33,12 +39,15 @@ public class Programe
             }catch (Exception e)
             {
                 Console.WriteLine("Error: "+e.ToString());
-                Console.Error.WriteLine("\nPress any Key to Continue except Exit(e): ");
+                Console.Error.WriteLine("\nPress any Key to Continue except Exit(e),Change Server IP(c): ");
 
                 var input = Console.ReadKey().KeyChar;
                 if(input=='e')
                 {
                     break;
+                }else if (input == 'c')
+                {
+                    setServerIP();
                 }
             }
             
