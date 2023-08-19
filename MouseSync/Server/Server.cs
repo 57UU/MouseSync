@@ -22,6 +22,7 @@ public partial class Server : Form
     {
         InitializeComponent();
         instance = this;
+        Hook.StartAll();
     }
 
     List<ClientPC> clients = new List<ClientPC>();
@@ -71,13 +72,23 @@ public partial class Server : Form
     private void Server_Load(object sender, EventArgs e)
     {
         textBox1.Text = Info.instance.Boardcast_Port.ToString();
-        trackBar1.Value = MouseHook.instance.maxCount;
+        trackBar1.Value = MouseHook.maxCount;
         updateRateLable();
-        MouseHook.addMouseCallback(mouseHandler);
+        MouseHook.addCallback(mouseHandler);
+        KeyboardHook.addCallback(keyHandler);
         server.Start();
 
     }
-    private void mouseHandler(object sender, MouseAllData e)
+
+    private void keyHandler(object? sender, KeyboardInputData e)
+    {
+        foreach (ClientPC pc in clients)
+        {
+            pc.sendKeyboard(e);
+        }
+    }
+
+    private void mouseHandler(object sender, MouseInputData e)
     {
 
         foreach (ClientPC pc in clients)
@@ -105,12 +116,12 @@ public partial class Server : Form
 
     private void trackBar1_Scroll(object sender, EventArgs e)
     {
-        MouseHook.instance.maxCount = trackBar1.Value;
+        MouseHook.maxCount = trackBar1.Value;
         updateRateLable();
     }
     void updateRateLable()
     {
-        label4.Text = $"Only 1/{MouseHook.instance.maxCount} of move\n event will be sent";
+        label4.Text = $"Only 1/{MouseHook.maxCount} of move\n event will be sent";
     }
 
     private void Server_FormClosed(object sender, FormClosedEventArgs e)

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MouseSync;
+namespace CommonLib;
 
 public static class Utils
 {
@@ -45,6 +45,14 @@ public static class Utils
     public static string[] split(string msg)
     {
         return msg.Split(DataExchange.SPLIT);
+    }
+    public static bool isContain(string[] args,object parameter)
+    {
+        if (args.Contains(parameter.ToString()))
+        {
+            return true;
+        }
+        return false;
     }
 
 }

@@ -2,12 +2,14 @@
 using System.Net.Mail;
 using System.Net.Sockets;
 using WindowsHID;
+using CommonLib;
 
-namespace MouseSync.Server;
+namespace MouseSyncServerCore;
 
 public class ClientPC
 {
     public Connection Connection { get; private set; }
+    public event EventHandler<string> onMessgeReceived;
     public ClientPC(string name, string resolution, string iP)
     {
         Console.Error.WriteLine("ONLY FOR DEBUG");
@@ -15,33 +17,39 @@ public class ClientPC
         Name = name;
         Resolution = resolution;
         IP = iP;
-        Server.instance.addClient(this);
+        ServerCore.instance.addClient(this);
         this.Connection=new ConnectionForDemo();
     }
-    public ClientPC(Connection connection)
+    public ClientPC(Connection connection,EventHandler<string> onMessageReceived)
     {
+        connection.messageHander = received;
+        this.onMessgeReceived = onMessageReceived;
         this.tcp = connection.TCPclient;
         this.IP = ((IPEndPoint)(tcp.Client.RemoteEndPoint)).Address.ToString();
 
-        Server.instance.addClient(this);
+        ServerCore.instance.addClient(this);
 
         Connection = connection;
-        Connection.messageHander = received;
-        connection.StartReceive();
+        
         connection.onError += Connection_onError;
+        connection.StartReceive();
     }
 
     private void Connection_onError(Exception e)
     {
-        Console.WriteLine("Lost Connection"+e.ToString());
-        Server.instance.removeClient(this);
+        //Console.WriteLine("Lost Connection"+e.ToString());
+        ServerCore.instance.removeClient(this);
     }
 
 
     //this is a call back
     public void received(string msg)
     {
-        Console.WriteLine(msg);
+        if (Entry.isDebug)
+        {
+            Console.WriteLine("Received: "+msg);
+        }
+        
         var splited = msg.Split(DataExchange.SPLIT);
         if (splited.Length > 1)
         {
@@ -54,7 +62,8 @@ public class ClientPC
                 Name = splited[1];
             }
         }
-        Server.instance.refreshFromOtherThread();
+        onMessgeReceived.Invoke(this,msg);
+
     }
     //send data format: (x:y:mousedata:flags)
     public void sendMouse(MouseInputData e)

@@ -7,17 +7,17 @@ using System.Threading.Tasks;
 namespace WindowsHID;
 
 
-
+[Obsolete]
 public static class InputForMouse
 {
     [DllImport("user32")]
     private static extern int mouse_event(uint dwFlags, int dx, int dy, uint mouseData, IntPtr dwExtraInfo);
-    private static int mouse_event(Flags flags, int x, int y,uint data=0)
+    private static int mouse_event(MouseFlags flags, int x, int y,uint data=0)
     {
-        return mouse_event((uint)(flags |Flags.MOUSEEVENTF_ABSOLUTE), x, y,data,0);
+        return mouse_event((uint)(flags |MouseFlags.MOUSEEVENTF_ABSOLUTE), x, y,data,0);
     }
     [Flags]
-    public enum Flags : uint
+    public enum MouseFlags : uint
     {
         MOUSEEVENTF_MOVE = 0x0001, //移动鼠标
         MOUSEEVENTF_LEFTDOWN = 0x0002, //模拟鼠标左键按下
@@ -29,7 +29,7 @@ public static class InputForMouse
         MOUSEEVENTF_ABSOLUTE = 0x8000,// 标示是否采用绝对坐标
         MOUSEEVENTF_WHEEL=0x0800,
     }
-    public static void simulate(Flags flags, int x, int y,uint data=0)
+    public static void simulate(MouseFlags flags, int x, int y,uint data=0)
     {
         mouse_event(flags, x, y,data);
     }
@@ -37,37 +37,7 @@ public static class InputForMouse
 
 public static class Input
 {
-/*    [Flags]
-    public enum MouseMessageInput : int
-    {
-        MOUSEEVENTF_MOVE = 0x0001,
 
-        MOUSEEVENTF_LEFTDOWN = 0x0002,
-
-        MOUSEEVENTF_LEFTUP = 0x0004,
-
-        MOUSEEVENTF_RIGHTDOWN = 0x0008,
-
-        MOUSEEVENTF_RIGHTUP = 0x0010,
-
-        MOUSEEVENTF_MIDDLEDOWN = 0x0020,
-
-        MOUSEEVENTF_MIDDLEUP = 0x0040,
-
-        MOUSEEVENTF_XDOWN = 0x0080,
-
-        MOUSEEVENTF_XUP = 0x0100,
-
-        MOUSEEVENTF_WHEEL = 0x0800,
-
-        MOUSEEVENTF_HWHEEL = 0x1000,
-
-        MOUSEEVENTF_MOVE_NOCOALESCE = 0x2000,
-
-        MOUSEEVENTF_VIRTUALDESK = 0x4000,
-
-        MOUSEEVENTF_ABSOLUTE = 0x8000
-    }*/
 
     [DllImport("user32.dll", SetLastError = true)]
     private static extern uint SendInput(uint nInputs, INPUT[] pInputs, int cbSize);
@@ -159,6 +129,15 @@ public enum MOUSEEVENTF : uint
     MOUSEEVENTF_ABSOLUTE = 0x8000,// 标示是否采用绝对坐标
     MOUSEEVENTF_WHEEL = 0x0800,
 }
+[Flags]
+public enum KEYEVENTF : int
+{
+    KEYEVENTF_KEYDOWN=0,
+    KEYEVENTF_KEYUP =0x0002,
+    KEYEVENTF_SCANCODE=0x0008,
+    KEYEVENTF_UNICODE=0x0004
+}
+
 [StructLayout(LayoutKind.Sequential)]
 public struct MOUSEINPUT
 {

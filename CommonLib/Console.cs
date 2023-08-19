@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace CommonLib;
 
+public delegate void LogHandler(string message);
 public static class ConsoleHelper
 {
     [DllImport("kernel32.dll")]

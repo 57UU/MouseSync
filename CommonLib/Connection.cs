@@ -9,7 +9,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MouseSync;
+namespace CommonLib;
 
 public class Connection
 {
@@ -43,6 +43,10 @@ public class Connection
         cts = new();
         this.TCPclient = client;
         stream = client.GetStream();
+        
+    }
+    public void StartReceive()
+    {
         receiveTask = receive();
     }
     public void close()
@@ -103,7 +107,7 @@ public class ConnectionServer
 {
     ConnectionHandler handler;
     TcpListener server;
-    Thread thread;
+    public Thread thread { get; private set; }
     public event onError OnError;
     
     public ConnectionServer(int port, ConnectionHandler handler)
@@ -124,7 +128,7 @@ public class ConnectionServer
     }
     private void Start()
     {
-        Console.WriteLine("Server start");
+        Console.WriteLine("Network Server Start");
         while (true)
         {
             try
@@ -144,6 +148,7 @@ public class ConnectionServer
                 OnError?.Invoke(e);
             }
         }
+        Console.WriteLine("Network Server Shutdown");
     }
 }
 

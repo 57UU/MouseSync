@@ -33,9 +33,11 @@ public static class Config
     public static void Test()
     {
         //Test 
-        Dictionary<string ,object> dict = new();
-        dict.Add("Name", null);
-        dict.Add("age", "123");
+        Dictionary<string, object> dict = new()
+        {
+            { "Name", null },
+            { "age", "123" }
+        };
         string text=Serialize(dict);
         Console.WriteLine(text);
         var s=Deserialize(text);

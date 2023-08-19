@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WindowsHID;
 
-namespace MouseSync;
+namespace CommonLib;
 
 public static class DataExchange
 {
@@ -15,7 +15,7 @@ public static class DataExchange
     }
     //for client
     public const string MOUSE= "m";
-    public const string KEY_BOARD = "k";
+    public const string KEY = "k";
     public static readonly Dictionary<int, MOUSEEVENTF> MOUSE_KEY_MAP = new()
     {
         { (int)MouseMessagesHook.WM_MBUTTONUP,  MOUSEEVENTF.MOUSEEVENTF_MIDDLEUP },
@@ -26,6 +26,11 @@ public static class DataExchange
         { (int)MouseMessagesHook.WM_RBUTTONDOWN, MOUSEEVENTF.MOUSEEVENTF_RIGHTDOWN },
         { (int)MouseMessagesHook.WM_MOUSEMOVE, MOUSEEVENTF.MOUSEEVENTF_MOVE },
         { (int)MouseMessagesHook.WM_MOUSEWHEEL,MOUSEEVENTF.MOUSEEVENTF_WHEEL },
+    };
+    public static readonly Dictionary<int, KEYEVENTF> KEYEVENT_MAP = new()
+    {
+        {(int)KeyboardMessages.WM_KEYUP,KEYEVENTF.KEYEVENTF_KEYUP },
+        {(int)KeyboardMessages.WM_KEYDOWN,KEYEVENTF.KEYEVENTF_KEYDOWN },
     };
     //for both
     public static readonly string SPLIT=":";

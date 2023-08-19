@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WindowsHID", "WindowsHID\Wi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Configuration", "Configuration\Configuration.csproj", "{0EEB1011-4CE4-43D2-952B-2A8CD7010325}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestHID", "TestHID\TestHID.csproj", "{704B9376-2995-4C8E-BFA0-4348934DA965}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestHID", "TestHID\TestHID.csproj", "{704B9376-2995-4C8E-BFA0-4348934DA965}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MouseSyncServerCore", "MouseSyncServerCore\MouseSyncServerCore.csproj", "{B9B8EFE9-BC19-4511-99A8-C48506C6D6C6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -111,6 +113,18 @@ Global
 		{704B9376-2995-4C8E-BFA0-4348934DA965}.Release|x64.Build.0 = Release|Any CPU
 		{704B9376-2995-4C8E-BFA0-4348934DA965}.Release|x86.ActiveCfg = Release|Any CPU
 		{704B9376-2995-4C8E-BFA0-4348934DA965}.Release|x86.Build.0 = Release|Any CPU
+		{B9B8EFE9-BC19-4511-99A8-C48506C6D6C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9B8EFE9-BC19-4511-99A8-C48506C6D6C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9B8EFE9-BC19-4511-99A8-C48506C6D6C6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B9B8EFE9-BC19-4511-99A8-C48506C6D6C6}.Debug|x64.Build.0 = Debug|Any CPU
+		{B9B8EFE9-BC19-4511-99A8-C48506C6D6C6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B9B8EFE9-BC19-4511-99A8-C48506C6D6C6}.Debug|x86.Build.0 = Debug|Any CPU
+		{B9B8EFE9-BC19-4511-99A8-C48506C6D6C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9B8EFE9-BC19-4511-99A8-C48506C6D6C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9B8EFE9-BC19-4511-99A8-C48506C6D6C6}.Release|x64.ActiveCfg = Release|Any CPU
+		{B9B8EFE9-BC19-4511-99A8-C48506C6D6C6}.Release|x64.Build.0 = Release|Any CPU
+		{B9B8EFE9-BC19-4511-99A8-C48506C6D6C6}.Release|x86.ActiveCfg = Release|Any CPU
+		{B9B8EFE9-BC19-4511-99A8-C48506C6D6C6}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -11,6 +11,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CommonLib\CommonLib.csproj" />
+    <ProjectReference Include="..\WindowsHID\WindowsHID.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="beta.cmd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

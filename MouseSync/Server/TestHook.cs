@@ -19,15 +19,23 @@ namespace MouseSync.Server
         {
             InitializeComponent();
             richTextBox1.ReadOnly = true;
-            this.Disposed += (s, e) => { MouseHook.instance.MouseAction -= callback; };
+            this.Disposed += (s, e) => { MouseHook.MouseAction -= callback;KeyboardHook.KeyboardAction -= callbackKeyboard; };
         }
         
 
         private void TestHook_Load(object sender, EventArgs e)
         {
-            MouseHook.addMouseCallback(callback);
+            MouseHook.addCallback(callback);
+            KeyboardHook.addCallback(callbackKeyboard);
         }
-        private void callback(object sender,MouseAllData e)
+        private void callbackKeyboard(object s,KeyboardInputData data)
+        {
+            richTextBox1.Text += Utils.format(
+                DataExchange.KEY,
+                data.code
+                ) + "\n";
+        }
+        private void callback(object sender,MouseInputData e)
         {
             richTextBox1.Text += Utils.format(
             DataExchange.MOUSE,

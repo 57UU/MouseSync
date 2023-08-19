@@ -1,46 +1,48 @@
 ﻿
 using CommonLib;
+using MouseSyncClientCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using WindowsHID;
 
 namespace MouseSync.Client;
 
-public  delegate void LogHandler(string message);
+
 public class ClientNetwork
 {
     
     public static LogHandler LogHandler { set; get; } = Console.WriteLine;
     
     public Connection Connection { get; private set; }
+    public event EventHandler onLoaded=(s,b)=>LogHandler("Connected to server successfully");
     public ClientNetwork(in string ip,in int port) {
         //isSimulate = false;
         Connection = Connection.connect(ip,port,receive);
         Connection.onError += Connection_onError;
         //send the resolution and machine name
+        Connection.send("ok");
         sendPairData(DataExchange.RESOLUTION, Device.Resolution);
         sendPairData(DataExchange.NAME, Device.MachineName);
-        /*        while(!Connection.receiveTask.IsCompleted)
-                {
-                    Thread.Sleep(100);
-
-                }*/
+        Connection.StartReceive();
+        onLoaded?.Invoke(this,null);
         int result=Connection.receiveTask.Result;
         if(result == 0)
         {
             throw new Exception("Cancelled by user");
         }
+
         
     }
 
     private void Connection_onError(Exception e)
     {
-        LogHandler("Connection Failed");
+        LogHandler("Connection has been interrupted,disconnected form server\n");
         throw e;
     }
 
@@ -50,19 +52,21 @@ public class ClientNetwork
     }
     private void receive(string msg)
     {
-#if DEBUG
-        LogHandler("Received: "+msg);
-#endif
+        if (Programe.isDebug)
+        {
+            LogHandler("Received: " + msg);
+        }
+
         var splited=msg.Split(DataExchange.SPLIT);
         if (splited[0] == DataExchange.MOUSE)
         {
             handleMouseEvent(splited);
-        }else if (splited[0] == DataExchange.KEY_BOARD) {
+        }else if (splited[0] == DataExchange.KEY) {
             handleKeyboardEvent(splited);
         }
     
     }
-    public bool isSimulate=true;
+    public static  bool isSimulate=true;
     private void handleMouseEvent(string[] msg)
     {
         int button = int.Parse(msg[1]);
@@ -75,9 +79,11 @@ public class ClientNetwork
         mouseInput.dwFlags = MOUSEEVENTF.MOUSEEVENTF_MOVE;
 
         if (button==(int)MouseMessagesHook.WM_MOUSEWHEEL) {
-#if DEBUG
-            LogHandler("Simulate wheel");
-#endif
+            if (Programe.isDebug)
+            {
+                LogHandler("Simulate wheel");
+            }
+
             //InputForMouse.simulate(InputForMouse.Flags.MOUSEEVENTF_WHEEL, x, y,mouseData);
             mouseInput.dwFlags = MOUSEEVENTF.MOUSEEVENTF_WHEEL;
             mouseInput.mouseData = mouseData>>16;
@@ -86,22 +92,30 @@ public class ClientNetwork
         }
         else
         {
-#if DEBUG
-            LogHandler("simulate btn press");
-#endif
+            if (Programe.isDebug)
+            {
+                LogHandler("simulate btn press");
+            }
+
 
             //InputForMouse.simulate(DataExchange.MOUSE_KEY_MAP[button], x, y);
-            mouseInput.dwFlags = DataExchange.MOUSE_KEY_MAP[button];
-
+            if (DataExchange.MOUSE_KEY_MAP.ContainsKey(button))
+            {
+                mouseInput.dwFlags = DataExchange.MOUSE_KEY_MAP[button];
+            }
+            else
+            {
+                LogHandler("Error:can not prase :" + button);
+            }
         }
-        if(isSimulate)
+        if (isSimulate)
         {
             Input.sendMouseInput(mouseInput);
         }
         
 
     }
-    [Obsolete]
+/*    [Obsolete]
     private void handleMouseEvent_obsolete(string[] msg)
     {
         int button = int.Parse(msg[1]);
@@ -114,9 +128,28 @@ public class ClientNetwork
         mouse_input.dx = x; 
         mouse_input.mouseData = mouseData;
         Input.sendMouseInput(mouse_input);
-    }
+    }*/
     private void handleKeyboardEvent(string[] msg)
     {
+        int code = int.Parse(msg[1]);
+        var vkcode = ushort.Parse(msg[2]);
+        var scanCode = ushort.Parse(msg[3]);
+        if(DataExchange.KEYEVENT_MAP.ContainsKey(code))
+        {
+            if(Programe.isDebug)
+            {
+                LogHandler($"Key receive: {vkcode}");
+            }
 
+            var flag = DataExchange.KEYEVENT_MAP[code];
+            var input = new Input.KEYBDINPUT() {
+                wVk = vkcode,
+                wScan = scanCode,
+                dwFlags = (uint)flag
+            };
+            if(isSimulate)
+            Input.sendKeyboardInput(input);
+        }
+        
     }
 }

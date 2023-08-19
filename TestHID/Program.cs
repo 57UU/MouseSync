@@ -1,8 +1,7 @@
-﻿using WindowsHID;
+﻿using CommonLib;
+using WindowsHID;
 
-
-//Console.WriteLine((uint)123);
-while (true)
+/*while (true)
 {
     var sb = Console.ReadLine();
     var sb2 = sb.Split(" ");
@@ -14,6 +13,16 @@ while (true)
     mouseInput.dx = x;
     mouseInput.dwFlags = MOUSEEVENTF.MOUSEEVENTF_MOVE;
     Input.sendMouseInput(mouseInput);
-/*    InputForMouse.simulate(InputForMouse.Flags.MOUSEEVENTF_MOVE|InputForMouse.Flags.MOUSEEVENTF_ABSOLUTE,
-        x, y);*/
-}
+*//*    InputForMouse.simulate(InputForMouse.Flags.MOUSEEVENTF_MOVE|InputForMouse.Flags.MOUSEEVENTF_ABSOLUTE,
+        x, y);*//*
+}*/
+Window.Create();
+MouseHook.addCallback((s, b) =>
+{
+    Console.WriteLine(b.code);
+});
+KeyboardHook.addCallback((s, b) =>
+{
+    Console.WriteLine(b.code);
+});
+new Thread(() => { Thread.Sleep(int.MaxValue); }).Start();
