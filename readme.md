@@ -2,15 +2,15 @@
 
 ## 使用方法
 
-让被控制端都运行被操纵端(MouseMagicMirrorSlave.exe)
+让被控制端都运行被操纵端(MouseSyncClientCore.exe)
 主控端运行后，鼠标键盘会同步发送到被控端
 
 比如：机房所有学生电脑均运行客户端后，会处于等待操作状态，此时选取一台电脑关闭学生端并打开服务端，就可以开始操控了
 
 ## 文件
-1. 主控端：MouseMagicMirrorMaster.exe	用于把一台计算机的键盘鼠标操作广播出去
+1. 主控端：MouseSyncServerCore.exe	用于把一台计算机的键盘鼠标操作广播出去
 
-2. 被操纵端：MouseMagicMirrorSlave.exe	用于机房其他计算机，接收操作者的键盘鼠标动作
+2. 被操纵端：MouseSyncClientCore.exe	用于机房其他计算机，接收操作者的键盘鼠标动作
 
 3. 配置文件：Setting.config			用于指导程序工作，如果没有会自动按提示生成
 
@@ -30,7 +30,7 @@
 
 ## 已知问题
 
-不能发送Ctrl+Alt+Del键，如果按下这三个键，需要退出软件后重新进入，否则Ctrl、Alt和一些未知键会持续保持被按下状态，直到真正被按下并释放。
+不能发送`Ctrl`+`Alt`+`Delete`键，如果按下这三个键，需要退出软件后重新进入，否则Ctrl、Alt和一些未知键会持续保持被按下状态，直到真正被按下并释放。
 
 ## 配置
 
@@ -87,16 +87,16 @@
 可以从命令行、快捷方式、批处理等方式以参数方式调用程序，共有两个参数：debug和notsimulate
 例如：
 
-`MouseMagicMirrorSlave.exe debug notsimulate`
+`MouseSyncClientCore.exe debug notsimulate`
 
 
-### 服务端(MouseMagicMirrorMaster.exe)只有一个参数
+### 服务端(MouseSyncServerCore.exe)只有一个参数
 |参数|含义|
 |---|---|
 |debug|实现调试模式启动|
 
 
-### 客户端(MouseMagicMirrorSlave.exe)两个参数都可以使用
+### 客户端(MouseSyncClientCore.exe)两个参数都可以使用
 |参数|含义|
 |---|---|
 |debug|以调试模式启动|
