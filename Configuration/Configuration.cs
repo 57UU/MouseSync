@@ -6,13 +6,21 @@ public static class Config
     public static string SplitSymbol { get; set; } = ":";
     public static Dictionary<string, string> Deserialize(string text)
     {
+
         Dictionary<string,string> dict = new Dictionary<string,string>();
         var lines = text.Split("\n");
         foreach(string i in lines)
         {
-            if(string.IsNullOrEmpty(i)) continue;
-            string[] splited = i.Split(SplitSymbol);
-            dict[splited[0]] = splited[1];
+
+            /*            if(string.IsNullOrEmpty(i)) continue;
+                        string[] splited = i.Split(SplitSymbol);
+                        dict[splited[0]] = splited[1].Trim();*/
+            if (string.IsNullOrEmpty(i)) continue;
+            int index = i.IndexOf(SplitSymbol);
+            var a = i.Substring(0, index);
+            var b = i.Substring(index + 1, i.Length - index - 1);
+            dict[a.Trim()] = b.Trim();
+
         }
         return dict;
     }
@@ -35,7 +43,7 @@ public static class Config
         //Test 
         Dictionary<string, object> dict = new()
         {
-            { "Name", null },
+            { "Name",null},
             { "age", "123" }
         };
         string text=Serialize(dict);

@@ -1,8 +1,5 @@
 ﻿using System.Net;
-using System.Net.Mail;
 using System.Net.Sockets;
-using WindowsHID;
-using CommonLib;
 
 namespace MouseSyncServerCore;
 
@@ -10,7 +7,7 @@ public class ClientPC
 {
     public Connection Connection { get; private set; }
     public event EventHandler<string> onMessgeReceived;
-    public ClientPC(string name, string resolution, string iP)
+/*    public ClientPC(string name, string resolution, string iP)
     {
         Console.Error.WriteLine("ONLY FOR DEBUG");
         //only for test
@@ -18,9 +15,9 @@ public class ClientPC
         Resolution = resolution;
         IP = iP;
         ServerCore.instance.addClient(this);
-        this.Connection=new ConnectionForDemo();
-    }
-    public ClientPC(Connection connection,EventHandler<string> onMessageReceived)
+        this.Connection = new ConnectionForDemo();
+    }*/
+    public ClientPC(Connection connection, EventHandler<string> onMessageReceived)
     {
         connection.messageHander = received;
         this.onMessgeReceived = onMessageReceived;
@@ -30,7 +27,7 @@ public class ClientPC
         ServerCore.instance.addClient(this);
 
         Connection = connection;
-        
+
         connection.onError += Connection_onError;
         connection.StartReceive();
     }
@@ -47,9 +44,9 @@ public class ClientPC
     {
         if (Entry.isDebug)
         {
-            Console.WriteLine("Received: "+msg);
+            Console.WriteLine("Received: " + msg);
         }
-        
+
         var splited = msg.Split(DataExchange.SPLIT);
         if (splited.Length > 1)
         {
@@ -62,7 +59,7 @@ public class ClientPC
                 Name = splited[1];
             }
         }
-        onMessgeReceived.Invoke(this,msg);
+        onMessgeReceived.Invoke(this, msg);
 
     }
     //send data format: (x:y:mousedata:flags)
@@ -75,7 +72,7 @@ public class ClientPC
             e.hookStruct.pt.X,
             e.hookStruct.pt.Y,
             e.hookStruct.mouseData
-            )) ;
+            ));
     }
     public void sendKeyboard(KeyboardInputData data)
     {
@@ -84,26 +81,26 @@ public class ClientPC
             data.code,//key down or up
             data.HookStruct.vkCode,
             data.HookStruct.scanCode
-            )); 
+            ));
     }
 
-    public string Name { get; set; }
-    public string Resolution { get; set; }
-    public string IP { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Resolution { get; set; } = string.Empty;
+    public string IP { get; set; } = string.Empty;
     public TcpClient tcp { get; set; }
 
 }
-public class ConnectionForDemo : Connection
+/*public class ConnectionForDemo : Connection
 {
 
 
-    public ConnectionForDemo(TcpClient client=null, MessageHander hander=null)
+    public ConnectionForDemo(TcpClient client = null, MessageHander hander = null)
     {
         Console.Error.WriteLine("This Class is only for test");
     }
 
-    public override async void send(string sb)
+    public override  void send(string sb)
     {
-        Console.WriteLine("Sending:   "+sb);
+        Console.WriteLine("Sending:   " + sb);
     }
-}
+}*/

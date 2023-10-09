@@ -14,7 +14,7 @@ namespace MouseSyncClientCore;
 
 public enum ClientFlags
 {
-    notSimulate,debug
+    notsimulate,debug
 }
 public class Programe
 {
@@ -29,8 +29,12 @@ public class Programe
     //entry point
     public static void Main(string[] args)
     {
-        if (args.Contains(ClientFlags.notSimulate.ToString()))
+
+        Advertisement.Start();
+        
+        if (isContain(args,ClientFlags.notsimulate))
         {
+            
             ClientNetwork.isSimulate = false;
         }
         if (isContain(args, ClientFlags.debug))
@@ -38,12 +42,37 @@ public class Programe
             isDebug = true;
         }
 
-#if DEBUG
-        ConsoleHelper.AllocConsole();
-#endif
-        if (string.IsNullOrEmpty(Info.instance.Server_IP)) {
-            setServerIP();
+        if(Info.instance.IsEnableBoardcast)
+        {
+            BoardcastReceive.activate();
         }
+        if(!Info.instance.IsEnableBoardcast)
+        {
+            if (string.IsNullOrEmpty(Info.instance.Server_IP))
+            {
+                setServerIP();
+            }
+        }
+
+        if(Info.instance.IsHideOnStart)
+        {
+            HideWindow.Hide();
+        }
+        if (Info.instance.IsEnableBoardcast)
+        {
+            Console.WriteLine("Waiting for boardcast");
+            while (true)
+            {
+                if (BoardcastReceive.isReceived)
+                {
+                    break;
+                }
+                Thread.Sleep(50);
+            }
+        }
+
+
+        
             
 
         Console.WriteLine("Try Connecting to "+Info.instance.Server_IP_Port);
@@ -55,21 +84,31 @@ public class Programe
                 new ClientNetwork(Info.instance.Server_IP, Info.instance.Server_Port);
             }catch (Exception e)
             {
-                Console.WriteLine("Error: "+e.ToString());
-                Console.Error.WriteLine("\nPress any Key to Continue except Exit(e),Change Server IP(c): ");
+                Console.WriteLine("Error: "+e.Message+"\n");
+                
 
-                var input = Console.ReadKey().KeyChar;
-                if(input=='e')
+
+                if(!Info.instance.IsRetryInstantly)
                 {
-                    break;
-                }else if (input == 'c')
+                    Console.Error.Write("\nPress any Key to Continue except Exit(e),Change Server IP(c): ");
+                    var input = Console.ReadKey().KeyChar;
+                    Console.WriteLine();
+                    if (input == 'e')
+                    {
+                        break;
+                    }
+                    else if (input == 'c')
+                    {
+                        setServerIP();
+                    }
+                }
+                else
                 {
-                    setServerIP();
+                    Console.WriteLine("--Retrying--");
                 }
             }
             
         }
-     
-
+        Advertisement.Reset();
     }
 }

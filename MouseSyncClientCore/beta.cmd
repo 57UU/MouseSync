@@ -1,1 +1,1 @@
-MouseSyncClientCore.exe notSimulate debug
+MouseSyncClientCore.exe notsimulate debug

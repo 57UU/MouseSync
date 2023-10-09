@@ -1,49 +1,46 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace CommonLib;
 
 public class Connection
 {
-    public Exception Exception { get; private set; }
-    public readonly string EOF=DataExchange.EOF; 
-    public Connection()
+    public Exception? Exception { get; private set; } 
+    public readonly string EOF = DataExchange.EOF;
+/*    public Connection()
     {
         Console.Error.WriteLine("---O parameter constructor of Connection is only for test---");
-    }
+    }*/
     public event onError? onError;
     public static int BufferSize { set; get; } = 1024;
-    public static Connection connect(string ip,int port,MessageHander hander)
+    public static Connection connect(string ip, int port, MessageHander hander)
     {
         TcpClient client = new TcpClient();
         client.Connect(IPAddress.Parse(ip), port);
-        Connection conn = new Connection(client,hander);
+        Connection conn = new Connection(client, hander);
         return conn;
     }
     public delegate void MessageHander(string msg);
-    
+
     public readonly TcpClient TCPclient;
-    public CancellationTokenSource cts {  get; private set; }
+    //public CancellationTokenSource cts {  get; private set; }
     private NetworkStream stream;
     public MessageHander messageHander { get; set; }
-    public Connection(TcpClient client,MessageHander hander):this(client)
+    public Connection(TcpClient client, MessageHander hander) : this(client)
     {
         this.messageHander = hander;
     }
+
+
     public Connection(TcpClient client)
+
+
     {
-        cts = new();
+        //cts = new();
         this.TCPclient = client;
         stream = client.GetStream();
-        
+
     }
     public void StartReceive()
     {
@@ -51,18 +48,18 @@ public class Connection
     }
     public void close()
     {
-        cts.Cancel();
+        //cts.Cancel();
         stream.Close();
         TCPclient.Close();
     }
 
-    public Task<int> receiveTask {  get; private set; }
+    public Task<int> receiveTask { get; private set; }
     public virtual async void send(string msg)
     {
 #if DEBUG
-        Console.WriteLine("Sending: "+msg);
+        Console.WriteLine("Sending: " + msg);
 #endif
-        byte[] responseData = Encoding.UTF8.GetBytes(msg+EOF);
+        byte[] responseData = Encoding.UTF8.GetBytes(msg + EOF);
         await stream.WriteAsync(responseData, 0, responseData.Length);
         await stream.FlushAsync();
     }
@@ -88,7 +85,8 @@ public class Connection
                 }
             }
         }
-        catch (TaskCanceledException ){
+        catch (TaskCanceledException)
+        {
             return 0;
         }
         catch (Exception ex)
@@ -108,43 +106,69 @@ public class ConnectionServer
     ConnectionHandler handler;
     TcpListener server;
     public Thread thread { get; private set; }
+
+    TcpListener? server_v6;
+    public Thread? thread_v6 { get; private set; }
+
     public event onError OnError;
-    
-    public ConnectionServer(int port, ConnectionHandler handler)
+
+
+    /// <summary>
+    /// Build IPv4 Server
+    /// </summary>
+    /// <param name="port"></param>
+    /// <param name="handler">How to deal with the connection</param>
+    public ConnectionServer(int port, ConnectionHandler handler) : this(port, handler, isEnableIPv6: true) { }
+
+    public ConnectionServer(int port, ConnectionHandler handler, bool isEnableIPv6)
+
     {
         this.handler = handler;
+        if (isEnableIPv6)
+        {
+            Console.WriteLine("IPv6 server has been enabled");
+            server_v6 = new TcpListener(IPAddress.IPv6Any, port);
+            server_v6.Start();
+            thread_v6 = new(() => Start(server_v6));
+            thread_v6.Start();
+        }
+
         server = new TcpListener(IPAddress.Any, port);
         server.Start();
-        thread = new(Start);
+        thread = new(() => Start(server));
         thread.Start();
     }
 
 
     public void close()
     {
+        server_v6?.Stop();
         server.Stop();
+        thread_v6?.Interrupt();
         thread.Interrupt();
-        
+
     }
-    private void Start()
+    private void Start(TcpListener _server)
     {
-        Console.WriteLine("Network Server Start");
+        Console.WriteLine($"Network Server {_server.LocalEndpoint.AddressFamily} Start");
         while (true)
         {
             try
             {
-                TcpClient client = server.AcceptTcpClient();
+                TcpClient client = _server.AcceptTcpClient();
                 handler.Invoke(new Connection(client));
             }
-            catch (ThreadInterruptedException e)
+            catch (ThreadInterruptedException)
             {
                 //throw e;
                 break;
-            }catch(InvalidOperationException e)
+            }
+            catch (InvalidOperationException)
             {
                 break;
             }
-            catch (Exception e) { 
+            catch (Exception e)
+            {
                 OnError?.Invoke(e);
             }
         }

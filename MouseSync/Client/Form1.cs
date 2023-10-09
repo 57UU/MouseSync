@@ -46,7 +46,7 @@ public partial class Form1 : Form
  
     private void saveServerToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        Info.instance.Server_IP_Port = ServerIP;
+        //Info.instance.Server_IP_Port = ServerIP;
         Info.save();
     }
 

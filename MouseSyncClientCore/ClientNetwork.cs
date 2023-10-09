@@ -30,7 +30,7 @@ public class ClientNetwork
         sendPairData(DataExchange.RESOLUTION, Device.Resolution);
         sendPairData(DataExchange.NAME, Device.MachineName);
         Connection.StartReceive();
-        onLoaded?.Invoke(this,null);
+        onLoaded?.Invoke(this,EventArgs.Empty);
         int result=Connection.receiveTask.Result;
         if(result == 0)
         {
@@ -56,13 +56,21 @@ public class ClientNetwork
         {
             LogHandler("Received: " + msg);
         }
-
+        Advertisement.Reset();
         var splited=msg.Split(DataExchange.SPLIT);
-        if (splited[0] == DataExchange.MOUSE)
+        try{
+            if (splited[0] == DataExchange.MOUSE)
+            {
+
+                handleMouseEvent(splited);
+            }
+            else if (splited[0] == DataExchange.KEY)
+            {
+                handleKeyboardEvent(splited);
+            }
+        }catch(Exception e)
         {
-            handleMouseEvent(splited);
-        }else if (splited[0] == DataExchange.KEY) {
-            handleKeyboardEvent(splited);
+            LogHandler($"Error Parse: {e.Message}");
         }
     
     }
@@ -149,6 +157,10 @@ public class ClientNetwork
             };
             if(isSimulate)
             Input.sendKeyboardInput(input);
+        }
+        else
+        {
+            LogHandler("Unknown Key");
         }
         
     }

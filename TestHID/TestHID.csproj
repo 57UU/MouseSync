@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CommonLib\CommonLib.csproj" />
+    <ProjectReference Include="..\Configuration\Configuration.csproj" />
     <ProjectReference Include="..\WindowsHID\WindowsHID.csproj" />
   </ItemGroup>
 

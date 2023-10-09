@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,12 +9,31 @@ namespace CommonLib;
 
 public static class Utils
 {
+    public static string programPath=string.Empty ;
+    static Utils()
+    {
+        if (programPath == string.Empty)
+        {
+            var temp = Process.GetCurrentProcess().MainModule.FileName;
+            if (string.IsNullOrEmpty(temp))
+            {
+                Console.WriteLine("Unable to get absolute path,use relative instead");
+            }
+            else
+            {
 
+                programPath = temp.Substring(0, temp.LastIndexOf("\\") + 1);
+            }
+        }
+
+    }
     public static string readFile(string path)
     {
-/*        try
-        {*/
-            return File.ReadAllText(path);
+        path=programPath+path;
+        
+        /*        try
+                {*/
+        return File.ReadAllText(path);
 /*        }
         catch(Exception e) {
             return null;
@@ -22,6 +42,7 @@ public static class Utils
     }
     public static bool writeFile(string path, string content)
     {
+        path = programPath+path;
         try
         {
             File.WriteAllText(path, content);
@@ -48,11 +69,13 @@ public static class Utils
     }
     public static bool isContain(string[] args,object parameter)
     {
-        if (args.Contains(parameter.ToString()))
+        bool flag = (args.Contains(parameter.ToString()));
+        if(flag)
         {
-            return true;
+            Console.WriteLine("Flag:" + parameter.ToString());
         }
-        return false;
+        
+        return flag;
     }
 
 }

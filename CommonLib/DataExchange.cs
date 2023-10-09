@@ -31,6 +31,8 @@ public static class DataExchange
     {
         {(int)KeyboardMessages.WM_KEYUP,KEYEVENTF.KEYEVENTF_KEYUP },
         {(int)KeyboardMessages.WM_KEYDOWN,KEYEVENTF.KEYEVENTF_KEYDOWN },
+        {(int)KeyboardMessages.WM_SYSKEYDOWN,KEYEVENTF.KEYEVENTF_KEYDOWN },
+        {(int)KeyboardMessages.WM_SYSKEYUP,KEYEVENTF.KEYEVENTF_KEYUP },
     };
     //for both
     public static readonly string SPLIT=":";
@@ -39,6 +41,4 @@ public static class DataExchange
     public const string NAME="name";
     public const string RESOLUTION = "re";
     //public const string DESCRIPTION = "description";
-
-
 }

@@ -25,19 +25,18 @@ public class Info
     public string Server_IP_Port { 
         get 
         { 
-            return $"{Server_IP}:{Server_Port}";
+            return $"[{Server_IP}]:{Server_Port}";
         }
-        set 
-        { 
-            var s = value.Split(":");
-            Server_IP = s[0];
-            Server_Port =int.Parse(s[1]); 
-        }
+
     }
-    public int Server_Port = 4757;
+    public int Server_Port = 34757;
     public string Server_IP  = null;
-    public int Boardcast_Port = 4756;
+    public int Boardcast_Port = 34756;
     public int MouseMovingRate = 5;
+    public bool IsHideOnStart=true;
+    public bool IsEnableBoardcast = true;
+    public bool IsRetryInstantly = false;
+    public bool IsEnableHotKey = true;
 
 
     public bool isServerUnset { get { return string.IsNullOrEmpty(Server_IP); } }
@@ -46,6 +45,13 @@ public class Info
     const string port = "Server_Port";
     const string boardcastPort = "Boardcast_Port";
     const string mouseMovingRate = "Mouse_moving_rate";
+    const string isHideOnStart = "Hide_on_start";
+    const string isEnableBoardcast = "Enable_Boardcast";
+    const string isRetryInstantly = "Is_retry_instantly";
+    const string isEnableHotKey = "Is_Enable_Hot-Key";
+
+
+    private static bool isNeedSave=false;
     public static Exception? save()
     {
         try
@@ -59,6 +65,10 @@ public class Info
                 {port,instance.Server_Port },
                 {boardcastPort,instance.Boardcast_Port},
                 {mouseMovingRate,instance.MouseMovingRate},
+                {isHideOnStart,instance.IsHideOnStart},
+                {isEnableBoardcast,instance.IsEnableBoardcast},
+                {isRetryInstantly,instance.IsRetryInstantly},
+                { isEnableHotKey,instance.IsEnableHotKey},
             });
 
             Utils.writeFile(CLIENT_SETTING, text);
@@ -91,7 +101,7 @@ public class Info
             }
             else
             {
-                save();
+                isNeedSave = true;
             }
             
         }
@@ -104,6 +114,38 @@ public class Info
             {
                 verible = temp[key];
             }
+            else
+            {
+                isNeedSave = true;
+            }
+        }
+
+    }
+    
+    static void TrySet(ref bool verible,string key)
+    {
+        if (temp != null)
+        {
+            if (temp.ContainsKey(key))
+            {
+                string value = temp[key];
+                if (value.ToLower() == "true")
+                {
+                    verible = true;
+                }else if (value.ToLower() == "false")
+                {
+                    verible = false;
+                }
+                else
+                {
+                    Console.WriteLine($"Unknow value <{value}>");
+                }
+            }
+            else
+            {
+                isNeedSave = true;
+            }
+
         }
     }
 
@@ -128,6 +170,15 @@ public class Info
             TrySet(ref instance.Boardcast_Port,boardcastPort);
             //instance.MouseMovingRate = int.Parse(dict[mouseMovingRate]);
             TrySet(ref instance.MouseMovingRate,mouseMovingRate);
+            TrySet(ref instance.IsHideOnStart,isHideOnStart);
+            TrySet(ref instance.IsEnableBoardcast,isEnableBoardcast);
+            TrySet(ref instance.IsRetryInstantly,isRetryInstantly);
+            TrySet(ref instance.IsEnableHotKey,isEnableHotKey);
+            if (isNeedSave)
+            {
+                save();
+                isNeedSave=false;
+            }
 
             temp = null;
 

@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "MouseSyncClientCore": {
+      "commandName": "Project"
+    },
+    "Not Simulate": {
+      "commandName": "Project",
+      "commandLineArgs": "notSimulate debug"
+    }
+  }
+}

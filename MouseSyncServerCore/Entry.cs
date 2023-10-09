@@ -25,6 +25,12 @@ public class Entry
         {
             isDebug = true;
         }
+        if (Info.instance.IsHideOnStart)
+        {
+            HideWindow.Hide();
+        }
         ServerCore.Start_Wait();
+
+
     }
 }
