@@ -149,11 +149,11 @@ public class ServerCore
         {
             if (e.HookStruct.vkCode == 161 || e.HookStruct.vkCode == 160)//shift
             {
-                hotkeyManager.setState(0, e.code == 256);
+                hotkeyManager.setState(1, e.code == 256);
             }
             if (e.HookStruct.vkCode == 119)//F8
             {
-                hotkeyManager.setState(1, e.code == 256);
+                hotkeyManager.setState(0, e.code == 256);
             }
         }
 

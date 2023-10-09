@@ -39,12 +39,8 @@ public class HotkeyManager
         }
         else
         {//keyup
-            bool flag = false;
-            for(int i = 0;i < hotkeys.Length;i++)
-            {
-                flag |= hotkeys[i];
-            }
-            if(!flag)
+
+            if(index==0)
             {
                 if (isAllKeyDown)
                 {
