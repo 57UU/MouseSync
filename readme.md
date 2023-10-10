@@ -1,18 +1,19 @@
-# <center>键鼠广播说明书</center>
+# <center>键鼠广播说明书|MouseSync</center>
 
 ## 📖使用方法 
 
-让被控制端都运行被操纵端(MouseSyncClientCore.exe)
-主控端运行后，鼠标键盘会同步发送到被控端
+让被控制端都运行被操纵端`MouseSyncClientCore.exe`
+
+主控端`MouseSyncServerCore.exe`运行后，鼠标键盘会同步发送到被控端
 
 比如：机房所有学生电脑均运行客户端后，会处于等待操作状态，此时选取一台电脑关闭学生端并打开服务端，就可以开始操控了
 
 ## 🗃️文件 
-1. 主控端：MouseSyncServerCore.exe	用于把一台计算机的键盘鼠标操作广播出去
+1. 主控端：`MouseSyncServerCore.exe`	用于把一台计算机的键盘鼠标操作广播出去
 
-2. 被操纵端：MouseSyncClientCore.exe	用于机房其他计算机，接收操作者的键盘鼠标动作
+2. 被操纵端：`MouseSyncClientCore.exe`	用于机房其他计算机，接收操作者的键盘鼠标动作
 
-3. 配置文件：Setting.config			用于指导程序工作，如果没有会自动按提示生成
+3. 配置文件：`Setting.config`			用于指导程序工作，如果没有会自动按提示生成
 
 ## ⚠️注意 
 <font color=red size=5>**本程序包含模拟鼠标键盘的操作，可能会被杀毒软件误报**</font>
@@ -35,7 +36,7 @@
 ## ⚙️配置 
 
 1. 什么都不管，直接运行程序，即可自动配置
-2. 也可修改Setting.config文件实现手动配置：
+2. 也可修改`Setting.config`文件实现手动配置：
 
 <br>
 
@@ -43,7 +44,7 @@
 
 <br>
 
-# 🏗️配置设置(Setting.config) 
+# 🏗️配置设置 `Setting.config`
 
 ## ℹ️概念 
 
@@ -56,15 +57,15 @@
 ## 📑配置详情 
 
 |配置名称|默认值|[类型](#类型)|服务端|客户端|
-|:---|:---|:---|:---|:---|
+|:---|:---:|:---:|:---|:---|
 |Server_IP|无|字符串|无效|要连接的服务器IP地址|
 |Server_Port|34757|整数|服务器监听端口|要连接的服务器端口|
 |Boardcast_Port|34756|整数|广播本机地址的端口|接受广播的端口|
 |Mouse_moving_rate|5|整数|详见[鼠标移动发送率](#鼠标移动发送率)|无效|
 |Hide_on_start|True|布尔值|是否在程序启动时最小化|同服务端|
-|Enable_Boardcast|True|布尔值|是否启动广播|是否监听广播(警告：若该值为True，将会忽略配置文件中的服务器地址)|
+|Enable_Boardcast|True|布尔值|是否启动广播|是否监听广播(若该值为True，将会忽略配置文件中的服务器地址)|
 |Is_retry_instantly|False|布尔值|无效|是否在出现错误后立即重试|
-|Is_EnableHot-Kry|True|布尔值|详见[暂停与继续](#暂停与继续)|无效|
+|Is_EnableHot-Key|True|布尔值|详见[暂停与继续](#暂停与继续)|无效|
 
 ## 鼠标移动发送率 
 当鼠标移动时会产生很多个鼠标移动事件，Mouse_moving_rate值表示要发送的比例
@@ -97,7 +98,7 @@ $\frac{1}{Mouse \underline{ } moving \underline{ } rate}$
 ### 服务端(MouseSyncServerCore.exe)只有一个参数
 |参数|含义|
 |---|---|
-|debug|实现调试模式启动|
+|debug|以调试模式启动|
 
 
 ### 客户端(MouseSyncClientCore.exe)两个参数都可以使用
