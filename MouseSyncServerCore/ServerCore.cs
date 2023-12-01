@@ -56,7 +56,7 @@ public class ServerCore
         }
         else
         {
-            LogHandler("Your device do NOT support IPv6");
+            LogHandler("Your network do NOT support IPv6");
         }
         if (Info.instance.IsEnableBoardcast)
         {
