@@ -29,6 +29,7 @@ public class Programe
     //entry point
     public static void Main(string[] args)
     {
+        Info.load();
 
         Advertisement.Start();
         

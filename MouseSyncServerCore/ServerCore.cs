@@ -7,12 +7,12 @@ public class ServerCore
 {
 
     public LogHandler LogHandler { get; set; } = Console.WriteLine;
-    ConnectionServer connectionServer;
+    public ConnectionServer connectionServer;
     int port = Info.instance.Server_Port;
     public static ServerCore instance;
     Thread boardcastThread;
 
-    private ServerCore(bool isCreateFakeWindowAndHook = true, bool isHook = false) {
+    public ServerCore(bool isCreateFakeWindowAndHook = true, bool isHook = false) {
         hotkeyManager = new(2, switchPause);
         instance = this;
         if (isCreateFakeWindowAndHook)
@@ -159,7 +159,7 @@ public class ServerCore
 
     }
 
-    private void mouseHandler(object sender, MouseInputData e)
+    public void mouseHandler(object sender, MouseInputData e)
     {
         if (isPause) return;
         foreach (ClientPC pc in clients)

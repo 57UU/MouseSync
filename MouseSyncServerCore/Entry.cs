@@ -20,6 +20,7 @@ public class Entry
     //Entry
     public static void Main(string[] args)
     {
+        Info.load();
 
         if (args.Contains(ServerFlags.debug.ToString()))
         {
