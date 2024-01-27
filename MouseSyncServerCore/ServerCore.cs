@@ -12,19 +12,11 @@ public class ServerCore
     public static ServerCore instance;
     Thread boardcastThread;
 
-    public ServerCore(bool isCreateFakeWindowAndHook = true, bool isHook = false) {
+    public ServerCore() {
         hotkeyManager = new(2, switchPause);
         instance = this;
-        if (isCreateFakeWindowAndHook)
-        {
-            Window.Create();
-        }
-        if (isHook)
-        {
-            WindowsHID.Hook.StartAll();
-        }
-        MouseHook.addCallback(mouseHandler);
-        KeyboardHook.addCallback(keyHandler);
+
+
 
         ConnectionHandler handler = conn =>
         {
@@ -130,7 +122,7 @@ public class ServerCore
         Console.WriteLine((isPause ? "--Paused--" : "--Continuing--")+"----------Press Shift+F8 to change state");
     }
     HotkeyManager hotkeyManager;
-    private void keyHandler(object? sender, KeyboardInputData e)
+    public void keyHandler(object? sender, KeyboardInputData e)
     {
         if (Entry.isDebug)
         {
@@ -159,7 +151,7 @@ public class ServerCore
 
     }
 
-    public void mouseHandler(object sender, MouseInputData e)
+    public void mouseHandler(object? sender, MouseInputData e)
     {
         if (isPause) return;
         foreach (ClientPC pc in clients)

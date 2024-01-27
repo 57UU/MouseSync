@@ -6,27 +6,45 @@ namespace MobileMouse;
 
 public partial class MainPage : ContentPage
 {
-    ServerCore server= new ServerCore(isCreateFakeWindowAndHook:false,isHook:false) {
-        LogHandler = (s) => { Assets.instance.logs.Add(s); }
-    };
+    ServerCore server; MouseButton left; MouseButton right;
     public MainPage()
     {
         InitializeComponent();
-        MouseButton left = new("Left");
-        MouseButton right = new("Right");
+        if (!Accelerometer.Default.IsSupported)
+        {
+            DisplayAlert("Warn", "Your device does NOT support accelerometer", "OK");
+            Navigation.PopAsync();
+        }
+        left = new("Left");
+        right = new("Right");
         grid.Add(left);
         grid.Add(right,1,0);
-        left.buttonDown += () => {
-            server.mouseHandler(this,Assets.instance.mouseInputData);
-        };
-        left.buttonRelease += () => {
+        loadServer();
+    }
+    void loadServer()
+    {
+
+         server= new ServerCore()
+         {
+             LogHandler = (s) => { Assets.instance.logs.Add(s); }
+         };
+        left.buttonDown += () =>
+        {
             server.mouseHandler(this, Assets.instance.mouseInputData);
         };
-        right.buttonDown += () => {
+        left.buttonRelease += () =>
+        {
             server.mouseHandler(this, Assets.instance.mouseInputData);
         };
-        right.buttonRelease += () => {
+        right.buttonDown += () =>
+        {
+            server.mouseHandler(this, Assets.instance.mouseInputData);
+        };
+        right.buttonRelease += () =>
+        {
             server.mouseHandler(this, Assets.instance.mouseInputData);
         };
     }
 }
+
+

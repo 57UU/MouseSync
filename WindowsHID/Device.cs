@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace WindowsHID;
 
+
+
+
 public static class Device
 {
     const int HORZRES = 8; // Width in pixels
@@ -64,3 +67,4 @@ public static class Device
             return $"{width}x{height}";
         } }
 }
+
