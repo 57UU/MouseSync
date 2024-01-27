@@ -15,11 +15,11 @@ internal class Integral
         value += value * (time - this.time);
         return value;
     }
-    double step(double value)
+    public double step(double value)
     {
         return step(value, DateTime.Now.Millisecond);
     }
-    void reset()
+    public void reset()
     {
         sum = 0;
     }
