@@ -14,7 +14,7 @@ public static class Network
     public static bool isSupportIPv6 { get; private set; }
     public static string localIP { get; private set; }
     public static string? localIPv6 { get; private set; }
-    public static string boardcastIP { get; private set; }
+    public static string boardcastIP { get; set; }
     //public static string? boardcastIPv6 { get; private set; }
     static readonly Socket socket;
     //static readonly Socket? socketv6;
@@ -35,7 +35,16 @@ public static class Network
     private static string getIPCast()
     {
         IPHostEntry hostEntry = Dns.GetHostEntry(Dns.GetHostName());
-        IPAddress ipv4 = hostEntry.AddressList[1];
+        IPAddress ipv4;
+        if (hostEntry.AddressList.Length>1)
+        {
+            ipv4 = hostEntry.AddressList[1];
+        }
+        else
+        {
+            ipv4 = hostEntry.AddressList[0];
+        }
+        
         IPAddress? ipv6=null;
         foreach (IPAddress ip in hostEntry.AddressList)
         {

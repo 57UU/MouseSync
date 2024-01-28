@@ -30,7 +30,8 @@ public class Entry
         {
             HideWindow.Hide();
         }
-        ServerCore.Start_Wait();
+        ServerCore.start();
+        
 
 
     }

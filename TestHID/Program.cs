@@ -31,11 +31,11 @@ KeyboardHook.addCallback((s, b) =>
 new Thread(() => { Thread.Sleep(int.MaxValue); }).Start();*/
 
 //Configuration.Config.Test();
-HotkeyManager hotkeyManager = new(2, () => { Console.WriteLine("invoked"); });
+/*HotkeyManager hotkeyManager = new(2, () => { Console.WriteLine("invoked"); });
 hotkeyManager.setState(1, true);
 Console.WriteLine("1");
 hotkeyManager.setState(0, true);
 Console.WriteLine("1");
 hotkeyManager.setState(1, false);
 Console.WriteLine("1");
-hotkeyManager.setState(0, false);
+hotkeyManager.setState(0, false);*/

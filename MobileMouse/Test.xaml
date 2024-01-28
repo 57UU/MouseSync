@@ -4,9 +4,8 @@
              x:Class="MobileMouse.Test"
              Title="Test">
     <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
+        <Label x:Name="xLabel"
+            Text="x" />
+        <Label x:Name="yLabel" Text="y"/>
     </VerticalStackLayout>
 </ContentPage>

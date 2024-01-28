@@ -1,4 +1,5 @@
-﻿using MobileMouse.Controls;
+﻿using CommonLib;
+using MobileMouse.Controls;
 using MouseSyncServerCore;
 using System.Numerics;
 using WindowsHID;
@@ -28,41 +29,50 @@ public partial class MainPage : ContentPage
         loadServer();
         
     }
-    void loadServer()
+    LogHandler logHandler = Assets.instance.logs.Add;
+    async void loadServer()
     {
-
-         server= new ServerCore()
-         {
-             LogHandler = (s) => { Assets.instance.logs.Add(s); }
-         };
+        await Task.Delay(100);
+        server = new ServerCore(logHandler);
         left.buttonDown += () =>
         {
-            server.mouseHandler(this, Assets.instance.mouseInputData);
+            sendData(513);
+
         };
         left.buttonRelease += () =>
         {
-            server.mouseHandler(this, Assets.instance.mouseInputData);
+            sendData(514);
         };
         right.buttonDown += () =>
         {
-            server.mouseHandler(this, Assets.instance.mouseInputData);
+
+            sendData(516);
         };
         right.buttonRelease += () =>
         {
-            server.mouseHandler(this, Assets.instance.mouseInputData);
+            sendData(517);
         };
+        var realIP=Utils.getIPAddress();
+        MouseSyncServerCore.Network.boardcastIP = realIP;
+        logHandler("override IPv4 to "+realIP);
     }
-    void loadAccelerator()
+    void sendData(int mouseCode)
     {
+        Assets.instance.MouseCode = mouseCode;
+        server.mouseHandler(this, Assets.instance.mouseInputData);
+    }
+    async void loadAccelerator()
+    {
+        await Task.Delay(200);
         Accelerometer.Default.ReadingChanged += Default_ReadingChanged; ;
-        Accelerometer.Default.Start(SensorSpeed.Fastest);
+        Accelerometer.Default.Start(SensorSpeed.Game);
     }
 
     AccelerometerData? lastData;
     Integral x_a = new();
     Integral y_a = new();
-    Integral x_v = new();
-    Integral y_v = new();
+    Integral x_v = new(false);
+    Integral y_v = new(false);
     private void Default_ReadingChanged(object? sender, AccelerometerChangedEventArgs e)
     {
         var current = e.Reading;
@@ -70,30 +80,28 @@ public partial class MainPage : ContentPage
         {
             //check weather static
             var delta = current.Acceleration - lastData.Value.Acceleration;
-            if (delta.Length() < 0.01f)
+
+            Assets.instance.magnitude_x = new Vector2(delta.X,delta.Y).Length();
+            Assets.instance.magnitude_a = new Vector2(current.Acceleration.X, current.Acceleration.Y).Length();
+            if (Assets.instance.magnitude_a < 0.019f)
             {
                 reset();
             }
             double v_x = x_a.step(current.Acceleration.X);
-            double v_y=y_a.step(current.Acceleration.Y);
+            double v_y=y_a.step(-current.Acceleration.Y);
             double x_x = x_v.step(v_x);
             double x_y=y_v.step(v_y);   
-            
+            Assets.instance.X_x = x_x;
+            Assets.instance.X_y = x_y;
         }
         lastData = current;
+        sendData(512);
     }
-    Quaternion rotate;
+
     void reset()
     {
-        OrientationSensor.Default.ReadingChanged += (s,e)=> { 
-            rotate = e.Reading.Orientation;
-            OrientationSensor.Default.Stop();
-        };
-        OrientationSensor.Default.Start(SensorSpeed.UI);
         x_a.reset();
         y_a.reset();
-        x_v.reset();
-        y_v.reset();
     }
 }
 

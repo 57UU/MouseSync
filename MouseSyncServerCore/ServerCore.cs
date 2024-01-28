@@ -12,7 +12,9 @@ public class ServerCore
     public static ServerCore instance;
     Thread boardcastThread;
 
-    public ServerCore() {
+    public ServerCore(LogHandler logHandler)
+    {
+        this.LogHandler = logHandler;
         hotkeyManager = new(2, switchPause);
         instance = this;
 
@@ -66,21 +68,33 @@ public class ServerCore
                     }
                     Thread.Sleep(2000);
                 }
-            }) { IsBackground = true };
+            })
+            { IsBackground = true };
             boardcastThread.Start();
         }
 
         LogHandler("----------Server is Ready----------");
         //printTable();
+    }
+
+    public ServerCore():this(Console.WriteLine) {
+
 
     }
     private void printTable()
     {
         LogHandler("\nAll Connected Devices\tMachine Name\tResolution\tIP Address");
     }
-    public static void Start_Wait()
+    public static void start()
     {
+        if(ServerCore.instance != null)
+        {
+            throw new Exception("Unable to instance it twice");
+        }
         new ServerCore();
+    }
+    public static void wait()
+    {
         ServerCore.instance.connectionServer.thread.Join();
     }
 
@@ -153,6 +167,17 @@ public class ServerCore
 
     public void mouseHandler(object? sender, MouseInputData e)
     {
+        if (Entry.isDebug)
+        {
+            Console.WriteLine(Utils.format(
+                DataExchange.MOUSE,
+                e.code,
+                e.hookStruct.pt.X,
+                e.hookStruct.pt.Y,
+                e.hookStruct.mouseData
+                )
+            );
+        }
         if (isPause) return;
         foreach (ClientPC pc in clients)
         {

@@ -5,6 +5,7 @@
         public AppShell()
         {
             InitializeComponent();
+            Assets.instance.mainThread=Thread.CurrentThread;
         }
     }
 }

@@ -4,7 +4,13 @@
              x:Class="MobileMouse.Logs"
              Title="Logs">
     <ScrollView>
-        <VerticalStackLayout x:Name="layout"  HorizontalOptions="Fill"/>
+        <VerticalStackLayout HorizontalOptions="Fill" Spacing="10" Margin="10">
+            <Button Text="Refresh" Clicked="Button_Clicked"/>
+            <VerticalStackLayout x:Name="layout"  HorizontalOptions="Fill">
+                
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+
 
     </ScrollView>
 </ContentPage>

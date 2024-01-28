@@ -1,13 +1,19 @@
-﻿using WindowsHID;
+﻿using MouseSyncServerCore;
+using WindowsHID;
 
 public class Programe
 {
     public static void Main(string[] args)
     {
-        MouseSyncServerCore.Entry.Main(args);
-        var instance = MouseSyncServerCore.ServerCore.instance;
+        Entry.Main(args);
+        var instance = ServerCore.instance;
         bool isCreateFakeWindowAndHook=true, isHook=false;
 
+        if ((isCreateFakeWindowAndHook) || (isHook))
+        {
+            MouseHook.addCallback(instance.mouseHandler);
+            KeyboardHook.addCallback(instance.keyHandler);
+        }
         if (isCreateFakeWindowAndHook)
         {
             Window.Create();
@@ -16,10 +22,7 @@ public class Programe
         {
             Hook.StartAll();
         }
-        if ((isCreateFakeWindowAndHook) || (isHook))
-        {
-            MouseHook.addCallback(instance.mouseHandler);
-            KeyboardHook.addCallback(instance.keyHandler);
-        }
+        ServerCore.wait();
+
     }
 }

@@ -8,12 +8,24 @@ namespace MobileMouse;
 
 internal class Integral
 {
+    bool isNegtiveable = true;
+    public Integral(bool isNegtiveable=true) {
+        this.isNegtiveable=isNegtiveable;
+    }
     double sum=0;
     int time = DateTime.Now.Millisecond;
     double step(double value, int time)
     {
-        value += value * (time - this.time);
-        return value;
+
+        sum += value * (time - this.time)/1000;
+        if (!isNegtiveable)
+        {
+            if (sum < 0)
+            {
+                sum = 0;
+            }
+        }
+        return sum;
     }
     public double step(double value)
     {
