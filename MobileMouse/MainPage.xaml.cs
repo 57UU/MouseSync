@@ -82,41 +82,59 @@ public partial class MainPage : ContentPage
     LowPasser lowPasserX = new();
     LowPasser lowPasserY = new();
     LowPasser lowPasserZ = new();
+    float avg_x_value = 0;
+    float avg_y_value = 0;
     private void Default_ReadingChanged(object? sender, AccelerometerChangedEventArgs e)
     {
         var current = e.Reading.Acceleration;
+        var raw=current;
+        
         //apply lowpass
-        current.X=lowPasserX.step(current.X);
-        current.Y=lowPasserY.step(current.Y);
+        current.X=lowPasserX.step(current.X-avg_x_value);
+        current.Y=lowPasserY.step(current.Y-avg_y_value);
         current.Z=lowPasserZ.step(current.Z);
         Assets.instance.rawData = current;
-        if(lastData!=null &&(MathF.Abs(current.Z-1)<0.019f))
+        float v_x;
+        float v_y;
+        if (lastData!=null &&(MathF.Abs(current.Z-1)<0.019f))
         {
-            current = (lastData.Value + current) / 2;
+            //current = (lastData.Value + current) / 2;
 
             Assets.instance.magnitude_a_xy = new Vector2(current.X, current.Y).Length();
-            if (new Vector3(current.X,current.Y, MathF.Abs(current.Z - 1)).Length() < 0.016f )
-            {
+            var magnitude = new Vector3(raw.X-lastData.Value.X, raw.Y-lastData.Value.Y, raw.Z - lastData.Value.Z).Length();
+            if (magnitude < 0.016f )
+            {//not moving
                 if(stopTime==null)
                 {
                     stopTime = DateTime.Now;
                 }
                 else
                 {
-                    if ((DateTime.Now - stopTime.Value).Milliseconds > 100)
+                    var deltaTime = (DateTime.Now - stopTime.Value).Milliseconds;
+                    if (deltaTime > 50)
                     {
-                        reset();
-                        stopTime = null;
+                        avg_x_value = (raw.X + avg_x_value) / 2;
+                        avg_y_value = (raw.Y + avg_y_value) / 2;
+                        if (deltaTime > 100)
+                        {
+                            reset();
+                            stopTime = null;
+                        }
                     }
+
+
                 }
-                
+
+                v_x = x_a.step(0);
+                v_y = y_a.step(0);
             }
-            else
+            else//moving
             {
                 stopTime = null;
+                v_x = x_a.step(current.X);
+                v_y = y_a.step(-current.Y);
             }
-            float v_x = x_a.step(current.X);
-            float v_y =y_a.step(-current.Y);
+
             float x_x = x_v.step(v_x);
             float x_y =y_v.step(v_y);   
             Assets.instance.X_x = x_x;
@@ -128,7 +146,7 @@ public partial class MainPage : ContentPage
 
     void reset()
     {
-        logHandler("Reset Accelerator");
+        //logHandler("Reset Accelerator");
         x_a.reset();
         y_a.reset();
     }

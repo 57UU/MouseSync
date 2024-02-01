@@ -14,12 +14,12 @@ internal class Integral
         this.isNegtiveable=isNegtiveable;
     }
     float sum=0;
-    int time = DateTime.Now.Millisecond;
+    int time = DateTime.Now.Nanosecond;
     float lastValue = 0;
     float step(float value, int time)
     {
-
-        sum +=( value+lastValue )/2* (time - this.time)/1000;
+        var deltaTime = time - this.time;
+        sum +=( value+lastValue )/2* (deltaTime) /1e9f;
         if (!isNegtiveable)
         {
             if (sum < 0)
@@ -33,7 +33,7 @@ internal class Integral
     }
     public float step(float value)
     {
-        return step(value, DateTime.Now.Millisecond);
+        return step(value, DateTime.Now.Nanosecond);
     }
     public void reset()
     {

@@ -24,6 +24,12 @@ public partial class Logs : ContentPage
     {
         if(Assets.instance.mainThread!=Thread.CurrentThread)
         {
+            MainThread.BeginInvokeOnMainThread(() => {
+                foreach (var item in Assets.instance.logs)
+                {
+                    layout.Add(new Label() { Text = item });
+                }
+            });
             return;
         }
         layout.Children.Clear();
