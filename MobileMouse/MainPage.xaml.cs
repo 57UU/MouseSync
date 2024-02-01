@@ -65,41 +65,70 @@ public partial class MainPage : ContentPage
     {
         await Task.Delay(200);
         Accelerometer.Default.ReadingChanged += Default_ReadingChanged; ;
-        Accelerometer.Default.Start(SensorSpeed.Game);
+        Accelerometer.Default.Start(SensorSpeed.Fastest);
+    }
+    void stopAccelerator()
+    {
+        Accelerometer.Default.ReadingChanged -= Default_ReadingChanged; ;
+        Accelerometer.Default.Stop();
     }
 
-    AccelerometerData? lastData;
+    Vector3? lastData;
     Integral x_a = new();
     Integral y_a = new();
     Integral x_v = new(false);
     Integral y_v = new(false);
+    DateTime? stopTime;
+    LowPasser lowPasserX = new();
+    LowPasser lowPasserY = new();
+    LowPasser lowPasserZ = new();
     private void Default_ReadingChanged(object? sender, AccelerometerChangedEventArgs e)
     {
-        var current = e.Reading;
-        if(lastData!=null)
+        var current = e.Reading.Acceleration;
+        //apply lowpass
+        current.X=lowPasserX.step(current.X);
+        current.Y=lowPasserY.step(current.Y);
+        current.Z=lowPasserZ.step(current.Z);
+        Assets.instance.rawData = current;
+        if(lastData!=null &&(MathF.Abs(current.Z-1)<0.019f))
         {
-            //check weather static
-            var delta = current.Acceleration - lastData.Value.Acceleration;
+            current = (lastData.Value + current) / 2;
 
-            Assets.instance.magnitude_x = new Vector2(delta.X,delta.Y).Length();
-            Assets.instance.magnitude_a = new Vector2(current.Acceleration.X, current.Acceleration.Y).Length();
-            if (Assets.instance.magnitude_a < 0.019f)
+            Assets.instance.magnitude_a_xy = new Vector2(current.X, current.Y).Length();
+            if (new Vector3(current.X,current.Y, MathF.Abs(current.Z - 1)).Length() < 0.016f )
             {
-                reset();
+                if(stopTime==null)
+                {
+                    stopTime = DateTime.Now;
+                }
+                else
+                {
+                    if ((DateTime.Now - stopTime.Value).Milliseconds > 100)
+                    {
+                        reset();
+                        stopTime = null;
+                    }
+                }
+                
             }
-            double v_x = x_a.step(current.Acceleration.X);
-            double v_y=y_a.step(-current.Acceleration.Y);
-            double x_x = x_v.step(v_x);
-            double x_y=y_v.step(v_y);   
+            else
+            {
+                stopTime = null;
+            }
+            float v_x = x_a.step(current.X);
+            float v_y =y_a.step(-current.Y);
+            float x_x = x_v.step(v_x);
+            float x_y =y_v.step(v_y);   
             Assets.instance.X_x = x_x;
             Assets.instance.X_y = x_y;
         }
         lastData = current;
-        sendData(512);
+        sendData(512);//moving
     }
 
     void reset()
     {
+        logHandler("Reset Accelerator");
         x_a.reset();
         y_a.reset();
     }

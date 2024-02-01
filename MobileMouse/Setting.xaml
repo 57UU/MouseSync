@@ -4,7 +4,10 @@
              x:Class="MobileMouse.Setting"
              Title="Setting">
     <VerticalStackLayout Margin="10" Spacing="10">
-        <Label Text="is Debug"/>
-        <Switch x:Name="isDebug" Toggled="isDebug_Toggled"/>
+        <HorizontalStackLayout HorizontalOptions="FillAndExpand" VerticalOptions="Center">
+            <Label Text="is Debug"/>
+            <Switch x:Name="isDebug" Toggled="isDebug_Toggled"/>
+        </HorizontalStackLayout>
+
     </VerticalStackLayout>
 </ContentPage>

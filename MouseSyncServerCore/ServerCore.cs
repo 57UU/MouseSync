@@ -179,10 +179,11 @@ public class ServerCore
             );
         }
         if (isPause) return;
-        foreach (ClientPC pc in clients)
+        for(int i = clients.Count - 1; i >= 0; i--)
         {
-            pc.sendMouse(e);
+            clients[i].sendMouse(e);
         }
+
     }
     public void Stop()
     {

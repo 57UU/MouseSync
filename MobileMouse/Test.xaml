@@ -6,6 +6,5 @@
     <VerticalStackLayout>
         <Label x:Name="xLabel"
             Text="x" />
-        <Label x:Name="yLabel" Text="y"/>
     </VerticalStackLayout>
 </ContentPage>

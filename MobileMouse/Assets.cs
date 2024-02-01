@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using WindowsHID;
@@ -20,7 +21,7 @@ public class Assets
     public ObservableCollection<string> logs = new();
     public MouseInputData mouseInputData = new MouseInputData() { hookStruct=new MSLLHOOKSTRUCT { pt = new POINT() ,mouseData=0} };
     
-    public double scale = 100;
+    public double scale = 1000;
     public double X_x { set { 
             
             x_x = value * scale;
@@ -49,7 +50,7 @@ public class Assets
         }
     }
     private double x_y = 0;
-    public double magnitude_x;
-    public double magnitude_a;
+    public double magnitude_a_xy;
+    public Vector3 rawData;
 
 }
