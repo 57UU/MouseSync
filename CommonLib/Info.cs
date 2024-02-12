@@ -13,9 +13,9 @@ public class Info
     static Info()
     {
         //Console.WriteLine("Configuration loading");
-        load();
+        //load();
     }
-    private const string CLIENT_SETTING = "Setting.config";
+    public static string CLIENT_SETTING { set; get; } = "Setting.config";
     private Info() { instance = this; }
 
 

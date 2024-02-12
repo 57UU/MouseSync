@@ -20,6 +20,7 @@ public class Entry
     //Entry
     public static void Main(string[] args)
     {
+        Info.load();
 
         if (args.Contains(ServerFlags.debug.ToString()))
         {
@@ -29,7 +30,8 @@ public class Entry
         {
             HideWindow.Hide();
         }
-        ServerCore.Start_Wait();
+        ServerCore.start();
+        
 
 
     }

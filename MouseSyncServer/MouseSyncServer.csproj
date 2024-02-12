@@ -1,13 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <OutputType>Library</OutputType>
+    <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PublishAot>true</PublishAot>
+    <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\CommonLib\CommonLib.csproj" />
-    <ProjectReference Include="..\WindowsDataCollection\WindowsDataCollection.csproj" />
+    <ProjectReference Include="..\MouseSyncServerCore\MouseSyncServerCore.csproj" />
   </ItemGroup>
+
 </Project>

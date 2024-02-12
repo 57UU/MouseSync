@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "MouseSyncServer": {
+      "commandName": "Project"
+    },
+    "debug": {
+      "commandName": "Project",
+      "commandLineArgs": "debug"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MobileMouse.Setting"
+             Title="Setting">
+    <VerticalStackLayout Margin="10" Spacing="10">
+        <HorizontalStackLayout HorizontalOptions="FillAndExpand" VerticalOptions="Center">
+            <Label Text="is Debug"/>
+            <Switch x:Name="isDebug" Toggled="isDebug_Toggled"/>
+        </HorizontalStackLayout>
+
+    </VerticalStackLayout>
+</ContentPage>

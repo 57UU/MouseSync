@@ -7,24 +7,18 @@ public class ServerCore
 {
 
     public LogHandler LogHandler { get; set; } = Console.WriteLine;
-    ConnectionServer connectionServer;
+    public ConnectionServer connectionServer;
     int port = Info.instance.Server_Port;
     public static ServerCore instance;
     Thread boardcastThread;
 
-    private ServerCore(bool isCreateFakeWindowAndHook = true, bool isHook = false) {
+    public ServerCore(LogHandler logHandler)
+    {
+        this.LogHandler = logHandler;
         hotkeyManager = new(2, switchPause);
         instance = this;
-        if (isCreateFakeWindowAndHook)
-        {
-            Window.Create();
-        }
-        if (isHook)
-        {
-            WindowsHID.Hook.StartAll();
-        }
-        MouseHook.addCallback(mouseHandler);
-        KeyboardHook.addCallback(keyHandler);
+
+
 
         ConnectionHandler handler = conn =>
         {
@@ -74,21 +68,33 @@ public class ServerCore
                     }
                     Thread.Sleep(2000);
                 }
-            }) { IsBackground = true };
+            })
+            { IsBackground = true };
             boardcastThread.Start();
         }
 
         LogHandler("----------Server is Ready----------");
         //printTable();
+    }
+
+    public ServerCore():this(Console.WriteLine) {
+
 
     }
     private void printTable()
     {
         LogHandler("\nAll Connected Devices\tMachine Name\tResolution\tIP Address");
     }
-    public static void Start_Wait()
+    public static void start()
     {
+        if(ServerCore.instance != null)
+        {
+            throw new Exception("Unable to instance it twice");
+        }
         new ServerCore();
+    }
+    public static void wait()
+    {
         ServerCore.instance.connectionServer.thread.Join();
     }
 
@@ -130,7 +136,7 @@ public class ServerCore
         Console.WriteLine((isPause ? "--Paused--" : "--Continuing--")+"----------Press Shift+F8 to change state");
     }
     HotkeyManager hotkeyManager;
-    private void keyHandler(object? sender, KeyboardInputData e)
+    public void keyHandler(object? sender, KeyboardInputData e)
     {
         if (Entry.isDebug)
         {
@@ -159,13 +165,25 @@ public class ServerCore
 
     }
 
-    private void mouseHandler(object sender, MouseInputData e)
+    public void mouseHandler(object? sender, MouseInputData e)
     {
-        if (isPause) return;
-        foreach (ClientPC pc in clients)
+        if (Entry.isDebug)
         {
-            pc.sendMouse(e);
+            Console.WriteLine(Utils.format(
+                DataExchange.MOUSE,
+                e.code,
+                e.hookStruct.pt.X,
+                e.hookStruct.pt.Y,
+                e.hookStruct.mouseData
+                )
+            );
         }
+        if (isPause) return;
+        for(int i = clients.Count - 1; i >= 0; i--)
+        {
+            clients[i].sendMouse(e);
+        }
+
     }
     public void Stop()
     {
