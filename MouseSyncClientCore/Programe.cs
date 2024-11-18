@@ -14,7 +14,7 @@ namespace MouseSyncClientCore;
 
 public enum ClientFlags
 {
-    notsimulate,debug
+    notsimulate,debug,ip
 }
 public class Programe
 {
@@ -30,51 +30,60 @@ public class Programe
     public static void Main(string[] args)
     {
         Info.load();
-
-        Advertisement.Start();
         
-        if (isContain(args,ClientFlags.notsimulate))
+        if (isContainFlag(args,ClientFlags.notsimulate))
         {
             
             ClientNetwork.isSimulate = false;
         }
-        if (isContain(args, ClientFlags.debug))
+        if (isContainFlag(args, ClientFlags.debug))
         {
             isDebug = true;
         }
-
-        if(Info.instance.IsEnableBoardcast)
+        bool isSetIpMannully = false;
+        try
         {
-            BoardcastReceive.activate();
-        }
-        if(!Info.instance.IsEnableBoardcast)
-        {
-            if (string.IsNullOrEmpty(Info.instance.Server_IP))
+            int index = findFlag(args, ClientFlags.ip);
+            if (index != -1)
             {
-                setServerIP();
+                Info.instance.Server_IP=args[index+1];
+                isSetIpMannully=true;
+                Console.WriteLine($"CommandLine ip:{Info.instance.Server_IP}");
             }
         }
-
-        if(Info.instance.IsHideOnStart)
+        catch (Exception ex) { 
+            Console.Error.WriteLine("unknown parameter for ip");
+        }
+        if (Info.instance.IsHideOnStart)
         {
             HideWindow.Hide();
         }
-        if (Info.instance.IsEnableBoardcast)
-        {
-            Console.WriteLine("Waiting for boardcast");
-            while (true)
+        if (!isSetIpMannully) {
+            if (Info.instance.IsEnableBoardcast)
             {
-                if (BoardcastReceive.isReceived)
+                BoardcastReceive.activate();
+            }
+            if (!Info.instance.IsEnableBoardcast)
+            {
+                if (string.IsNullOrEmpty(Info.instance.Server_IP))
                 {
-                    break;
+                    setServerIP();
                 }
-                Thread.Sleep(50);
+            }
+            if (Info.instance.IsEnableBoardcast)
+            {
+                Console.WriteLine("Waiting for boardcast");
+                while (true)
+                {
+                    if (BoardcastReceive.isReceived)
+                    {
+                        break;
+                    }
+                    Thread.Sleep(50);
+                }
             }
         }
 
-
-        
-            
 
         Console.WriteLine("Try Connecting to "+Info.instance.Server_IP_Port);
         
@@ -110,6 +119,5 @@ public class Programe
             }
             
         }
-        Advertisement.Reset();
     }
 }

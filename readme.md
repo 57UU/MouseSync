@@ -89,21 +89,22 @@ $\frac{1}{Mouse \underline{ } moving \underline{ } rate}$
 |布尔值|真(True)或假(False)|该项不区分大小写|
 
 # 🎨启动参数 
-可以从命令行、快捷方式、批处理等方式以参数方式调用程序，共有两个参数：debug和notsimulate
+可以从命令行、快捷方式、批处理等方式以参数方式调用程序，比如
 例如：
 
-`MouseSyncClientCore.exe debug notsimulate`
+`MouseSyncClientCore.exe debug notsimulate ip 127.0.0.1`
 
 
-### 服务端(MouseSyncServerCore.exe)只有一个参数
+### 服务端(MouseSyncServerCore.exe)
 |参数|含义|
 |---|---|
 |debug|以调试模式启动|
 
 
-### 客户端(MouseSyncClientCore.exe)两个参数都可以使用
+### 客户端(MouseSyncClientCore.exe)
 |参数|含义|
 |---|---|
 |debug|以调试模式启动|
 |notsimulate|不模拟按键|
+|ip|指定特定的ip地址（忽略配置文件中的参数）|
 

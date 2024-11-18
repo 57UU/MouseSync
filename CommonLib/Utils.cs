@@ -67,7 +67,7 @@ public static class Utils
     {
         return msg.Split(DataExchange.SPLIT);
     }
-    public static bool isContain(string[] args,object parameter)
+    public static bool isContainFlag(string[] args,object parameter)
     {
         bool flag = (args.Contains(parameter.ToString()));
         if(flag)
@@ -77,5 +77,12 @@ public static class Utils
         
         return flag;
     }
-
+    public static int findFlag(string[] args, object parameter)
+    {
+        for (int i = 0; i < args.Length; i++)
+        {
+            if (args[i].Equals(parameter.ToString())) { return i; }
+        }
+        return -1;
+    }
 }
