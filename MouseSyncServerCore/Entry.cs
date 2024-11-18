@@ -21,7 +21,6 @@ public class Entry
     public static void Main(string[] args)
     {
         Info.load();
-
         if (args.Contains(ServerFlags.debug.ToString()))
         {
             isDebug = true;

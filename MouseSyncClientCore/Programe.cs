@@ -59,23 +59,23 @@ public class Programe
             HideWindow.Hide();
         }
         if (!isSetIpMannully) {
-            if (Info.instance.IsEnableBoardcast)
+            if (Info.instance.IsEnableBroadcast)
             {
-                BoardcastReceive.activate();
+                BroadcastReceive.activate();
             }
-            if (!Info.instance.IsEnableBoardcast)
+            if (!Info.instance.IsEnableBroadcast)
             {
                 if (string.IsNullOrEmpty(Info.instance.Server_IP))
                 {
                     setServerIP();
                 }
             }
-            if (Info.instance.IsEnableBoardcast)
+            if (Info.instance.IsEnableBroadcast)
             {
-                Console.WriteLine("Waiting for boardcast");
+                Console.WriteLine("Waiting for broadcast");
                 while (true)
                 {
-                    if (BoardcastReceive.isReceived)
+                    if (BroadcastReceive.isReceived)
                     {
                         break;
                     }

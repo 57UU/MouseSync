@@ -10,7 +10,7 @@ public class ServerCore
     public ConnectionServer connectionServer;
     int port = Info.instance.Server_Port;
     public static ServerCore instance;
-    Thread boardcastThread;
+    Thread broadcastThread;
 
     public ServerCore(LogHandler logHandler)
     {
@@ -36,41 +36,41 @@ public class ServerCore
             });
 
         };
-        connectionServer = new(port, handler, Network.isSupportIPv6);
+        connectionServer = new(port, handler, Networks.IsSupportIPv6);
         LogHandler($"Listenning on port {port} ");
 
         connectionServer.OnError += e => Console.Error.WriteLine(e.ToString());
 
         MouseHook.maxCount = Info.instance.MouseMovingRate;
         ClientRemove += ServerCore_ClientRemove;
-        LogHandler($"Local IPv4 is {Network.localIP}");
-        if (Network.isSupportIPv6)
+        LogHandler($"Local IPv4 is [{string.Join(", ", Networks.Ipv4s)}]");
+        if (Networks.IsSupportIPv6)
         {
-            LogHandler($"Local IPv6 is {Network.localIPv6}");
+            LogHandler($"Local IPv6 is [{string.Join(", ", Networks.Ipv6s)}]");
         }
         else
         {
             LogHandler("Your network do NOT support IPv6");
         }
-        if (Info.instance.IsEnableBoardcast)
+        if (Info.instance.IsEnableBroadcast)
         {
-            LogHandler("Starting Boardcast");
-            boardcastThread = new(() => {
+            LogHandler("Starting Broadcast");
+            broadcastThread = new(() => {
 
                 while (true)
                 {
-                    if (Network.boardcast())
+                    if (Networks.broadcast())
                     {
                         if (Entry.isDebug)
                         {
-                            LogHandler("Boardcasting successful");
+                            LogHandler("Broadcasting successful");
                         }
                     }
                     Thread.Sleep(2000);
                 }
             })
             { IsBackground = true };
-            boardcastThread.Start();
+            broadcastThread.Start();
         }
 
         LogHandler("----------Server is Ready----------");

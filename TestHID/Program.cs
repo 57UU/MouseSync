@@ -1,4 +1,5 @@
 ﻿using CommonLib;
+using MouseSyncServerCore;
 using System.Diagnostics;
 using WindowsHID;
 
@@ -39,3 +40,14 @@ Console.WriteLine("1");
 hotkeyManager.setState(1, false);
 Console.WriteLine("1");
 hotkeyManager.setState(0, false);*/
+
+Info.load();
+Console.WriteLine(string.Join("\n", Networks.Ipv4s));
+
+Console.WriteLine(string.Join("\n", Networks.Ipv6s));
+
+while (true)
+{
+    Networks.broadcast();
+    await Task.Delay(1000);
+}
