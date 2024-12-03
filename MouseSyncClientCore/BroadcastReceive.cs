@@ -10,27 +10,33 @@ using CommonLib;
 
 namespace MouseSyncClientCore;
 
-public static class BoardcastReceive
+public static class BroadcastReceive
 {
     public static bool isReceived=false;
     public static Thread thread;
     public static void activate()
     {
-        if(Info.instance.IsEnableBoardcast)
+        if(Info.instance.IsEnableBroadcast)
         {
-            Console.WriteLine("Receiving Boardcast");
+            Console.WriteLine("Receiving Broadcast");
             thread=new Thread(Receive) { IsBackground=true};
             thread.Start(); 
         }
     }
+    public static void terminate()
+    {
+        _terminate=true;
+        thread.Interrupt();
+    }
+    static bool _terminate = false;
     private static void Receive()
     {
-        for (; ; )
+        while (!_terminate)
         {
             try
             {
                 Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-                IPEndPoint ipendPoint = new IPEndPoint(IPAddress.Any, Info.instance.Boardcast_Port);
+                IPEndPoint ipendPoint = new IPEndPoint(IPAddress.Any, Info.instance.Broadcast_Port);
                 EndPoint endPoint = ipendPoint;
                 try
                 {
@@ -42,7 +48,7 @@ public static class BoardcastReceive
                     //Thread.CurrentThread.Interrupt();
                 }
                 byte[] array = new byte[1024];
-                for (; ; )
+                while(!_terminate)
                 {
                     int num = socket.ReceiveFrom(array, ref endPoint);
                     if (num > 0)
@@ -59,6 +65,7 @@ public static class BoardcastReceive
                                 Console.WriteLine($"Server Address Update to {Info.instance.Server_IP_Port}");
                             } 
                             isReceived = true;
+                            _terminate=true;
                         }
                     }
                 }

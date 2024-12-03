@@ -56,7 +56,6 @@ public class ClientNetwork
         {
             LogHandler("Received: " + msg);
         }
-        Advertisement.Reset();
         var splited=msg.Split(DataExchange.SPLIT);
         try{
             if (splited[0] == DataExchange.MOUSE)

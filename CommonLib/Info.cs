@@ -31,10 +31,10 @@ public class Info
     }
     public int Server_Port = 34757;
     public string Server_IP  = null;
-    public int Boardcast_Port = 34756;
+    public int Broadcast_Port = 34756;
     public int MouseMovingRate = 5;
     public bool IsHideOnStart=true;
-    public bool IsEnableBoardcast = true;
+    public bool IsEnableBroadcast = true;
     public bool IsRetryInstantly = false;
     public bool IsEnableHotKey = true;
 
@@ -43,10 +43,10 @@ public class Info
 
     const string ip = "Server_IP";
     const string port = "Server_Port";
-    const string boardcastPort = "Boardcast_Port";
+    const string broadcastPort = "Broadcast_Port";
     const string mouseMovingRate = "Mouse_moving_rate";
     const string isHideOnStart = "Hide_on_start";
-    const string isEnableBoardcast = "Enable_Boardcast";
+    const string isEnableBroadcast = "Enable_Broadcast";
     const string isRetryInstantly = "Is_retry_instantly";
     const string isEnableHotKey = "Is_Enable_Hot-Key";
 
@@ -63,10 +63,10 @@ public class Info
             {
                 {ip,instance.Server_IP },
                 {port,instance.Server_Port },
-                {boardcastPort,instance.Boardcast_Port},
+                {broadcastPort,instance.Broadcast_Port},
                 {mouseMovingRate,instance.MouseMovingRate},
                 {isHideOnStart,instance.IsHideOnStart},
-                {isEnableBoardcast,instance.IsEnableBoardcast},
+                {isEnableBroadcast,instance.IsEnableBroadcast},
                 {isRetryInstantly,instance.IsRetryInstantly},
                 { isEnableHotKey,instance.IsEnableHotKey},
             });
@@ -167,11 +167,11 @@ public class Info
             //instance.Server_Port = int.Parse(dict[port]);
             TrySet(ref instance.Server_Port,port);
             //instance.Boardcast_Port = int.Parse(dict[boardcastPort]);
-            TrySet(ref instance.Boardcast_Port,boardcastPort);
+            TrySet(ref instance.Broadcast_Port,broadcastPort);
             //instance.MouseMovingRate = int.Parse(dict[mouseMovingRate]);
             TrySet(ref instance.MouseMovingRate,mouseMovingRate);
             TrySet(ref instance.IsHideOnStart,isHideOnStart);
-            TrySet(ref instance.IsEnableBoardcast,isEnableBoardcast);
+            TrySet(ref instance.IsEnableBroadcast,isEnableBroadcast);
             TrySet(ref instance.IsRetryInstantly,isRetryInstantly);
             TrySet(ref instance.IsEnableHotKey,isEnableHotKey);
             if (isNeedSave)
