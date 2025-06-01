@@ -5,7 +5,7 @@
     },
     "Not Simulate": {
       "commandName": "Project",
-      "commandLineArgs": "notSimulate debug"
+      "commandLineArgs": "notsimulate debug"
     }
   }
 }

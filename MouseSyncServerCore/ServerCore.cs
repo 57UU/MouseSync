@@ -83,7 +83,7 @@ public class ServerCore
     }
     private void printTable()
     {
-        LogHandler("\nAll Connected Devices\tMachine Name\tResolution\tIP Address");
+        LogHandler("\nConnected Devices\tMachine Name\tResolution\tIP Address");
     }
     public static void start()
     {
