@@ -4,12 +4,12 @@
 
 让被控制端都运行被操纵端`MouseSyncClientCore.exe`
 
-主控端`MouseSyncServerCore.exe`运行后，鼠标键盘会同步发送到被控端
+主控端`MouseSyncServer.exe`运行后，鼠标键盘会同步发送到被控端
 
 比如：机房所有学生电脑均运行客户端后，会处于等待操作状态，此时选取一台电脑关闭学生端并打开服务端，就可以开始操控了
 
 ## 🗃️文件 
-1. 主控端：`MouseSyncServerCore.exe`	用于把一台计算机的键盘鼠标操作广播出去
+1. 主控端：`MouseSyncServer.exe`	用于把一台计算机的键盘鼠标操作广播出去
 
 2. 被操纵端：`MouseSyncClientCore.exe`	用于机房其他计算机，接收操作者的键盘鼠标动作
 
@@ -26,7 +26,7 @@
 ## 🤩特色 
 
 - 本程序的网络连接采用异步编程，延迟更低，性能更好
-- 支持IPv6网络，若网络条件满足，甚至可以用一台电脑控制多个场所(学校，工厂，网吧)的电脑
+- 支持IPv6网络
 - 软件小巧，无第三方依赖库，无运行时环境，单程序即可运行
 
 ## 🤔已知问题 
@@ -52,7 +52,7 @@
 |:---:|:---|
 |Server_IP|记录服务器的IP地址，形如192.168.100.123(注意:IPv6也受支持)|
 |Server_Port|用于网络通信的端口(指发送IO数据的通信端口)|
-|broadcast_Port|用于网络广播通信的端口，服务器在xxx.xxx.xxx.255上广播本机IPv4地址，客户端可以通过广播来获取服务器的IP地址|
+|broadcast_Port|用于网络广播通信的端口，服务端在广播地址上广播本机IPv4地址与端口（支持多网卡），客户端可以通过广播来获取服务器的IP地址|
 
 ## 📑配置详情 
 
@@ -60,9 +60,9 @@
 |:---|:---:|:---:|:---|:---|
 |Server_IP|无|字符串|无效|要连接的服务器IP地址|
 |Server_Port|34757|整数|服务器监听端口|要连接的服务器端口|
-|broadcast_Port|34756|整数|广播本机地址的端口|接受广播的端口|
+|broadcast_Port|34756|整数|广播本机地址与端口|接受广播的端口|
 |Mouse_moving_rate|5|整数|详见[鼠标移动发送率](#鼠标移动发送率)|无效|
-|Hide_on_start|True|布尔值|是否在程序启动时最小化|同服务端|
+|Hide_on_start|True|布尔值|是否在程序启动时最小化窗口|同服务端|
 |Enable_broadcast|True|布尔值|是否启动广播|是否监听广播(若该值为True，将会忽略配置文件中的服务器地址)|
 |Is_retry_instantly|False|布尔值|无效|是否在出现错误后立即重试|
 |Is_EnableHot-Key|True|布尔值|详见[暂停与继续](#暂停与继续)|无效|
@@ -95,7 +95,7 @@ $\frac{1}{Mouse \underline{ } moving \underline{ } rate}$
 `MouseSyncClientCore.exe debug notsimulate ip 127.0.0.1`
 
 
-### 服务端(MouseSyncServerCore.exe)
+### 服务端(MouseSyncServer.exe)
 |参数|含义|
 |---|---|
 |debug|以调试模式启动|
@@ -105,6 +105,6 @@ $\frac{1}{Mouse \underline{ } moving \underline{ } rate}$
 |参数|含义|
 |---|---|
 |debug|以调试模式启动|
-|notsimulate|不模拟按键|
-|ip|指定特定的ip地址（忽略配置文件中的参数）|
+|notsimulate|不模拟按键输入|
+|ip|指定特定的ip地址，需要将IP地址跟在后面（忽略配置文件中的参数）|
 
