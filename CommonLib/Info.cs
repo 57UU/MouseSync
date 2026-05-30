@@ -30,7 +30,7 @@ public class Info
 
     }
     public int Server_Port = 34757;
-    public string Server_IP  = null;
+    public string Server_IP  = string.Empty;
     public int Broadcast_Port = 34756;
     public int MouseMovingRate = 5;
     public bool IsHideOnStart=true;
