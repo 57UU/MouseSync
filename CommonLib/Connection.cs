@@ -54,7 +54,7 @@ public class Connection
     }
 
     public Task<int> receiveTask { get; private set; }
-    public virtual async void send(string msg)
+    public virtual async Task sendAsync(string msg)
     {
 #if DEBUG
         Console.WriteLine("Sending: " + msg);
@@ -63,25 +63,47 @@ public class Connection
         await stream.WriteAsync(responseData, 0, responseData.Length);
         await stream.FlushAsync();
     }
+
+    /// <summary>
+    /// 同步发送包装，调用方无需 async/await 即可使用。
+    /// 内部捕获异常避免 async void 崩溃进程。
+    /// </summary>
+    public void send(string msg)
+    {
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await sendAsync(msg);
+            }
+            catch (Exception ex)
+            {
+                Exception = ex;
+                onError?.Invoke(ex);
+            }
+        });
+    }
+
     private async Task<int> receive()
     {
+        string pending = string.Empty;
         try
         {
-            while (true)
+            byte[] buffer = new byte[BufferSize];
+            int bytesRead;
+
+            while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
             {
-                byte[] buffer = new byte[BufferSize];
-                int bytesRead;
-
-                while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+                string dataReceived = pending + Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                var parts = dataReceived.Split(EOF);
+                // 最后一个元素是不完整的消息片段（或空串），保留到下次
+                pending = parts[^1];
+                for (int i = 0; i < parts.Length - 1; i++)
                 {
-                    string dataReceived = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-                    //Console.WriteLine($"Received: {dataReceived}");
-                    var m = dataReceived.Split(EOF);
-                    for (int i = 0; i < m.Length - 1; i++)
+                    if (parts[i].Length > 0)
                     {
-                        messageHander?.Invoke(m[i]);
+                        messageHander?.Invoke(parts[i]);
                     }
-
                 }
             }
         }
@@ -95,6 +117,7 @@ public class Connection
             onError?.Invoke(ex);
             return -1;
         }
+        return 0;
     }
 }
 
