@@ -146,7 +146,9 @@ public class ServerCore
 
         if (!isPause)
         {
-            foreach (ClientPC pc in clients)
+            List<ClientPC> snapshot;
+            lock (globalLock) { snapshot = new List<ClientPC>(clients); }
+            foreach (ClientPC pc in snapshot)
             {
                 pc.sendKeyboard(e);
             }
@@ -179,9 +181,11 @@ public class ServerCore
             );
         }
         if (isPause) return;
-        for(int i = clients.Count - 1; i >= 0; i--)
+        List<ClientPC> snapshot;
+        lock (globalLock) { snapshot = new List<ClientPC>(clients); }
+        for(int i = snapshot.Count - 1; i >= 0; i--)
         {
-            clients[i].sendMouse(e);
+            snapshot[i].sendMouse(e);
         }
 
     }
