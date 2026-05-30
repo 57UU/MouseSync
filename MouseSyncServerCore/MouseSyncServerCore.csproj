@@ -8,6 +8,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\CommonLib\CommonLib.csproj" />
-    <ProjectReference Include="..\WindowsDataCollection\WindowsDataCollection.csproj" />
+    <ProjectReference Include="..\WindowsHID\WindowsHID.csproj" />
   </ItemGroup>
 </Project>
