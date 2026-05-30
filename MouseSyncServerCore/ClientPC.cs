@@ -19,7 +19,7 @@ public class ClientPC
     }*/
     public ClientPC(Connection connection, EventHandler<string> onMessageReceived)
     {
-        connection.messageHander = received;
+        connection.messageHandler = received;
         this.onMessgeReceived = onMessageReceived;
         this.tcp = connection.TCPclient;
         this.IP = ((IPEndPoint)(tcp.Client.RemoteEndPoint)).Address.ToString();
@@ -94,7 +94,7 @@ public class ClientPC
 {
 
 
-    public ConnectionForDemo(TcpClient client = null, MessageHander hander = null)
+    public ConnectionForDemo(TcpClient client = null, MessageHandler hander = null)
     {
         Console.Error.WriteLine("This Class is only for test");
     }

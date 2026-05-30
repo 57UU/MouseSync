@@ -70,7 +70,7 @@ public static class Input
     public static void sendKeyboardInput(KEYBDINPUT keyboardInput)
     {
         INPUT input = new INPUT();
-        input.type = InputType.INPUT_KETBOARD;
+        input.type = InputType.INPUT_KEYBOARD;
         input.U = new() { ki=keyboardInput };
         sendOneInput(input);
     }
@@ -85,7 +85,7 @@ public static class Input
     public static class InputType 
     {
         public const int INPUT_MOUSE= 0;
-        public const int INPUT_KETBOARD= 1;
+        public const int INPUT_KEYBOARD= 1;
 
     }
 

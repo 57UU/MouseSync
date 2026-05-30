@@ -52,7 +52,7 @@ public class ClientNetwork
     }
     private void receive(string msg)
     {
-        if (Programe.isDebug)
+        if (Program.isDebug)
         {
             LogHandler("Received: " + msg);
         }
@@ -86,7 +86,7 @@ public class ClientNetwork
         mouseInput.dwFlags = MOUSEEVENTF.MOUSEEVENTF_MOVE;
 
         if (button==(int)MouseMessagesHook.WM_MOUSEWHEEL) {
-            if (Programe.isDebug)
+            if (Program.isDebug)
             {
                 LogHandler("Simulate wheel");
             }
@@ -99,7 +99,7 @@ public class ClientNetwork
         }
         else
         {
-            if (Programe.isDebug)
+            if (Program.isDebug)
             {
                 LogHandler("simulate btn press");
             }
@@ -143,7 +143,7 @@ public class ClientNetwork
         var scanCode = ushort.Parse(msg[3]);
         if(DataExchange.KEYEVENT_MAP.ContainsKey(code))
         {
-            if(Programe.isDebug)
+            if(Program.isDebug)
             {
                 LogHandler($"Key receive: {vkcode}");
             }

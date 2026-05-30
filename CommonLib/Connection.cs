@@ -14,22 +14,22 @@ public class Connection
     }*/
     public event onError? onError;
     public static int BufferSize { set; get; } = 1024;
-    public static Connection connect(string ip, int port, MessageHander hander)
+    public static Connection connect(string ip, int port, MessageHandler hander)
     {
         TcpClient client = new TcpClient();
         client.Connect(IPAddress.Parse(ip), port);
         Connection conn = new Connection(client, hander);
         return conn;
     }
-    public delegate void MessageHander(string msg);
+    public delegate void MessageHandler(string msg);
 
     public readonly TcpClient TCPclient;
     //public CancellationTokenSource cts {  get; private set; }
     private NetworkStream stream;
-    public MessageHander messageHander { get; set; }
-    public Connection(TcpClient client, MessageHander hander) : this(client)
+    public MessageHandler messageHandler { get; set; }
+    public Connection(TcpClient client, MessageHandler hander) : this(client)
     {
-        this.messageHander = hander;
+        this.messageHandler = hander;
     }
 
 
@@ -102,7 +102,7 @@ public class Connection
                 {
                     if (parts[i].Length > 0)
                     {
-                        messageHander?.Invoke(parts[i]);
+                        messageHandler?.Invoke(parts[i]);
                     }
                 }
             }

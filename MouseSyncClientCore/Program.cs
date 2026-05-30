@@ -16,7 +16,7 @@ public enum ClientFlags
 {
     notsimulate,debug,ip
 }
-public class Programe
+public class Program
 {
     public static bool isDebug = false;
     private static void setServerIP()
