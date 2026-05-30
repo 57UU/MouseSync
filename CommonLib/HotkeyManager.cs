@@ -3,7 +3,7 @@
 public class HotkeyManager
 {
     bool[] hotkeys;
-    ThreadStart Task;
+    ThreadStart action;
     public HotkeyManager(int numKeys,ThreadStart task)
     {
         hotkeys = new bool[numKeys];
@@ -11,7 +11,7 @@ public class HotkeyManager
         {
             hotkeys[i] = false;
         }
-        Task = task;
+        action = task;
     }
     bool isAllKeyDown=false;
     /// <summary>
@@ -38,7 +38,7 @@ public class HotkeyManager
             {
                 if (isAllKeyDown)
                 {
-                    Task.Invoke();
+                    action.Invoke();
                 }
                 isAllKeyDown = false;
             }

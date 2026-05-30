@@ -4,12 +4,12 @@ using System.Text;
 
 namespace CommonLib;
 
-public class Connection
+public class Connection : IDisposable
 {
     public Exception? Exception { get; private set; }
-    public readonly string EOF = DataExchange.EOF;
+    public static readonly string EOF = DataExchange.EOF;
     public event onError? onError;
-    public static int BufferSize { set; get; } = 1024;
+    public static int BufferSize { set; get; } = 4096;
     public static Connection connect(string ip, int port, MessageHandler hander)
     {
         TcpClient client = new TcpClient();
@@ -40,6 +40,11 @@ public class Connection
     {
         stream.Close();
         TCPclient.Close();
+    }
+
+    public void Dispose()
+    {
+        close();
     }
 
     public Task<int> receiveTask { get; private set; }
@@ -113,7 +118,7 @@ public class Connection
 
 public delegate void ConnectionHandler(Connection connection);
 public delegate void onError(Exception e);
-public class ConnectionServer
+public class ConnectionServer : IDisposable
 {
     ConnectionHandler handler;
     TcpListener server;
@@ -158,7 +163,11 @@ public class ConnectionServer
         server.Stop();
         thread_v6?.Interrupt();
         thread.Interrupt();
+    }
 
+    public void Dispose()
+    {
+        close();
     }
     private void Start(TcpListener _server)
     {

@@ -124,7 +124,7 @@ public static class Networks
     }
 
 }
-class BroadcastUdp
+class BroadcastUdp : IDisposable
 {
     UdpClient udp;
     byte[] message;
@@ -132,12 +132,12 @@ class BroadcastUdp
     public readonly IPAddress localAddress;
     int port;
     public readonly AddressFamily addressFamily;
-    public BroadcastUdp(IPAddress localIp,IPAddress broadcastIp,int port)
+    public BroadcastUdp(IPAddress localIp, IPAddress broadcastIp, int port)
     {
-        localAddress=localIp;
+        localAddress = localIp;
         string msg = $"IP{DataExchange.SPLIT}{localIp.ToString()}{DataExchange.SPLIT}{Info.instance.Server_Port}";
         udp = new UdpClient();
-        addressFamily=localIp.AddressFamily;
+        addressFamily = localIp.AddressFamily;
         udp.EnableBroadcast = true;
         this.message = Encoding.Unicode.GetBytes(msg);
         this.broadcastAddress = broadcastIp;
@@ -148,4 +148,8 @@ class BroadcastUdp
         udp.Send(message, message.Length, new IPEndPoint(broadcastAddress, port));
     }
 
+    public void Dispose()
+    {
+        udp.Close();
+    }
 }
