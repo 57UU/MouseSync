@@ -91,15 +91,15 @@ public static class MouseHook
         {
             if ((MouseMessagesHook)wParam == MouseMessagesHook.WM_MOUSEMOVE)
             {
-                if (count == maxCount + 1 || count > maxCount + 1)
-                {
-                    count = 0;
-                }
                 if (count == 0)
                 {
                     triggerEvent();
                 }
                 count++;
+                if (count >= maxCount)
+                {
+                    count = 0;
+                }
             }
             else
             {
