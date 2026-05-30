@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using CommonLib;
@@ -7,31 +7,35 @@ namespace MouseSyncClientCore;
 
 public static class BroadcastReceive
 {
-    public static bool isReceived=false;
+    public static bool isReceived = false;
     public static Thread thread;
+    private static Socket _socket;
+    static bool _terminate = false;
+
     public static void activate()
     {
-        if(Info.instance.IsEnableBroadcast)
+        if (Info.instance.IsEnableBroadcast)
         {
             Console.WriteLine("Receiving Broadcast");
-            thread=new Thread(Receive) { IsBackground=true};
-            thread.Start(); 
+            thread = new Thread(Receive) { IsBackground = true };
+            thread.Start();
         }
     }
+
     public static void terminate()
     {
-        _terminate=true;
-        thread?.Interrupt();
+        _terminate = true;
+        try { _socket?.Close(); } catch { }
     }
-    static bool _terminate = false;
+
     private static void Receive()
     {
-        Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+        _socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
         IPEndPoint ipendPoint = new IPEndPoint(IPAddress.Any, Info.instance.Broadcast_Port);
         EndPoint endPoint = ipendPoint;
         try
         {
-            socket.Bind(ipendPoint);
+            _socket.Bind(ipendPoint);
         }
         catch (Exception ex)
         {
@@ -39,40 +43,46 @@ public static class BroadcastReceive
             return;
         }
 
-        byte[] array = new byte[1024];
-        while (!_terminate)
+        try
         {
-            try
+            byte[] array = new byte[1024];
+            while (!_terminate)
             {
-                int num = socket.ReceiveFrom(array, ref endPoint);
-                if (num > 0)
+                try
                 {
-                    string[] array2 = Encoding.Unicode.GetString(array, 0, num).Split(DataExchange.SPLIT);
-                    if (array2[0] == "IP")
+                    int num = _socket.ReceiveFrom(array, ref endPoint);
+                    if (num > 0)
                     {
-                        var tempIP = array2[1];
-                        var tempPort = int.Parse(array2[2]);
-                        if (tempIP != Info.instance.Server_IP || tempPort != Info.instance.Server_Port)
+                        string[] array2 = Encoding.Unicode.GetString(array, 0, num).Split(DataExchange.SPLIT);
+                        if (array2[0] == "IP")
                         {
-                            Info.instance.Server_IP = tempIP;
-                            Info.instance.Server_Port = tempPort;
-                            Console.WriteLine($"Server Address Update to {Info.instance.Server_IP_Port}");
+                            var tempIP = array2[1];
+                            var tempPort = int.Parse(array2[2]);
+                            if (tempIP != Info.instance.Server_IP || tempPort != Info.instance.Server_Port)
+                            {
+                                Info.instance.Server_IP = tempIP;
+                                Info.instance.Server_Port = tempPort;
+                                Console.WriteLine($"Server Address Update to {Info.instance.Server_IP_Port}");
+                            }
+                            isReceived = true;
+                            _terminate = true;
                         }
-                        isReceived = true;
-                        _terminate = true;
                     }
                 }
-            }
-            catch (SocketException) when (_terminate)
-            {
-                // terminate 被设置时 socket 可能被关闭，正常退出
-                break;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"广播接收异常: {ex.Message}");
+                catch (SocketException) when (_terminate)
+                {
+                    // terminate() 关闭 socket 导致的异常，正常退出
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"广播接收异常: {ex.Message}");
+                }
             }
         }
-        socket.Close();
+        finally
+        {
+            try { _socket.Close(); } catch { }
+        }
     }
 }

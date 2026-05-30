@@ -10,6 +10,10 @@ public class Connection : IDisposable
     public static readonly string EOF = DataExchange.EOF;
     public event onError? onError;
     public static int BufferSize { set; get; } = 4096;
+
+    private bool _disposed = false;
+    public bool IsConnected => !_disposed && TCPclient.Connected;
+
     public static Connection connect(string ip, int port, MessageHandler hander)
     {
         TcpClient client = new TcpClient();
@@ -38,6 +42,8 @@ public class Connection : IDisposable
     }
     public void close()
     {
+        if (_disposed) return;
+        _disposed = true;
         stream.Close();
         TCPclient.Close();
     }
@@ -61,9 +67,15 @@ public class Connection : IDisposable
     /// <summary>
     /// 同步发送包装，调用方无需 async/await 即可使用。
     /// 内部捕获异常避免 async void 崩溃进程。
+    /// 连接已断开时通过 onError 上报。
     /// </summary>
     public void send(string msg)
     {
+        if (_disposed)
+        {
+            onError?.Invoke(new ObjectDisposedException(nameof(Connection)));
+            return;
+        }
         _ = Task.Run(async () =>
         {
             try
@@ -99,6 +111,11 @@ public class Connection : IDisposable
                         messageHandler?.Invoke(parts[i]);
                     }
                 }
+            }
+            // 连接正常关闭，处理 pending 中残留的最后一段完整消息
+            if (pending.Length > 0)
+            {
+                messageHandler?.Invoke(pending);
             }
         }
         catch (TaskCanceledException)
