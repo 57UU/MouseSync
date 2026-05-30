@@ -1,43 +1,30 @@
-﻿//using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 
 namespace CommonLib;
 
 public class Info
 {
-    static Info()
-    {
-        //Console.WriteLine("Configuration loading");
-        //load();
-    }
     public static string CLIENT_SETTING { set; get; } = "Setting.config";
     private Info() { instance = this; }
 
-
     public static Info instance { get; private set; }
 
-    //eg: 127.0.0.1:4567
-    public string Server_IP_Port { 
-        get 
-        { 
+    public string Server_IP_Port {
+        get
+        {
             return $"[{Server_IP}]:{Server_Port}";
         }
-
     }
     public int Server_Port = 34757;
-    public string Server_IP  = string.Empty;
+    public string Server_IP = string.Empty;
     public int Broadcast_Port = 34756;
     public int MouseMovingRate = 5;
-    public bool IsHideOnStart=true;
+    public bool IsHideOnStart = true;
     public bool IsEnableBroadcast = true;
     public bool IsRetryInstantly = false;
     public bool IsEnableHotKey = true;
-
 
     public bool isServerUnset { get { return string.IsNullOrEmpty(Server_IP); } }
 
@@ -50,25 +37,21 @@ public class Info
     const string isRetryInstantly = "Is_retry_instantly";
     const string isEnableHotKey = "Is_Enable_Hot-Key";
 
-
-    private static bool isNeedSave=false;
+    private static bool isNeedSave = false;
     public static Exception? save()
     {
         try
         {
-            string text=null;
-
-            //text = JsonConvert.SerializeObject(instance);
-            text = Configuration.Config.Serialize(new Dictionary<string, object>
+            string text = Configuration.Config.Serialize(new Dictionary<string, object>
             {
-                {ip,instance.Server_IP },
-                {port,instance.Server_Port },
-                {broadcastPort,instance.Broadcast_Port},
-                {mouseMovingRate,instance.MouseMovingRate},
-                {isHideOnStart,instance.IsHideOnStart},
-                {isEnableBroadcast,instance.IsEnableBroadcast},
-                {isRetryInstantly,instance.IsRetryInstantly},
-                { isEnableHotKey,instance.IsEnableHotKey},
+                { ip, instance.Server_IP },
+                { port, instance.Server_Port },
+                { broadcastPort, instance.Broadcast_Port },
+                { mouseMovingRate, instance.MouseMovingRate },
+                { isHideOnStart, instance.IsHideOnStart },
+                { isEnableBroadcast, instance.IsEnableBroadcast },
+                { isRetryInstantly, instance.IsRetryInstantly },
+                { isEnableHotKey, instance.IsEnableHotKey },
             });
 
             Utils.writeFile(CLIENT_SETTING, text);
@@ -78,35 +61,34 @@ public class Info
         {
             return ex;
         }
-
     }
+
     private static Dictionary<string, string> temp;
-    static void TrySet(ref int verible,string key)
+    static void TrySet(ref int verible, string key)
     {
-        if(temp != null)
+        if (temp != null)
         {
             if (temp.ContainsKey(key))
             {
                 int r;
-                bool flag = int.TryParse(temp[key],out r);
+                bool flag = int.TryParse(temp[key], out r);
                 if (flag)
                 {
                     verible = r;
                 }
                 else
                 {
-                    //Error
-                    Console.WriteLine($"Key {key} prase error,use default value instead");
+                    Console.WriteLine($"Key {key} parse error, use default value instead");
                 }
             }
             else
             {
                 isNeedSave = true;
             }
-            
         }
     }
-    static void TrySet(ref string verible,string key)
+
+    static void TrySet(ref string verible, string key)
     {
         if (temp != null)
         {
@@ -119,10 +101,9 @@ public class Info
                 isNeedSave = true;
             }
         }
-
     }
-    
-    static void TrySet(ref bool verible,string key)
+
+    static void TrySet(ref bool verible, string key)
     {
         if (temp != null)
         {
@@ -132,20 +113,20 @@ public class Info
                 if (value.ToLower() == "true")
                 {
                     verible = true;
-                }else if (value.ToLower() == "false")
+                }
+                else if (value.ToLower() == "false")
                 {
                     verible = false;
                 }
                 else
                 {
-                    Console.WriteLine($"Unknow value <{value}>");
+                    Console.WriteLine($"Unknown value <{value}>");
                 }
             }
             else
             {
                 isNeedSave = true;
             }
-
         }
     }
 
@@ -154,36 +135,30 @@ public class Info
         try
         {
             string text = Utils.readFile(CLIENT_SETTING);
-
-            /*            Info obj = JsonConvert.DeserializeObject<Info>(text);
-                        instance = obj;*/
             new Info();
-            var dict=Configuration.Config.Deserialize(text);
+            var dict = Configuration.Config.Deserialize(text);
 
             temp = dict;
 
-            //instance.Server_IP = dict[ip];
-            TrySet(ref instance.Server_IP,ip);
-            //instance.Server_Port = int.Parse(dict[port]);
-            TrySet(ref instance.Server_Port,port);
-            //instance.Boardcast_Port = int.Parse(dict[boardcastPort]);
-            TrySet(ref instance.Broadcast_Port,broadcastPort);
-            //instance.MouseMovingRate = int.Parse(dict[mouseMovingRate]);
-            TrySet(ref instance.MouseMovingRate,mouseMovingRate);
-            TrySet(ref instance.IsHideOnStart,isHideOnStart);
-            TrySet(ref instance.IsEnableBroadcast,isEnableBroadcast);
-            TrySet(ref instance.IsRetryInstantly,isRetryInstantly);
-            TrySet(ref instance.IsEnableHotKey,isEnableHotKey);
+            TrySet(ref instance.Server_IP, ip);
+            TrySet(ref instance.Server_Port, port);
+            TrySet(ref instance.Broadcast_Port, broadcastPort);
+            TrySet(ref instance.MouseMovingRate, mouseMovingRate);
+            TrySet(ref instance.IsHideOnStart, isHideOnStart);
+            TrySet(ref instance.IsEnableBroadcast, isEnableBroadcast);
+            TrySet(ref instance.IsRetryInstantly, isRetryInstantly);
+            TrySet(ref instance.IsEnableHotKey, isEnableHotKey);
             if (isNeedSave)
             {
                 save();
-                isNeedSave=false;
+                isNeedSave = false;
             }
 
             temp = null;
 
             return null;
-        }catch(IOException ex)
+        }
+        catch (IOException ex)
         {
             new Info();
             save();
@@ -192,10 +167,7 @@ public class Info
         catch (Exception ex)
         {
             new Info();
-            //save();
             return ex;
         }
-
     }
-
 }

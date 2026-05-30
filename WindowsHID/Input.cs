@@ -1,39 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.InteropServices;
+
 namespace WindowsHID;
-
-
-[Obsolete]
-public static class InputForMouse
-{
-    [DllImport("user32")]
-    private static extern int mouse_event(uint dwFlags, int dx, int dy, uint mouseData, IntPtr dwExtraInfo);
-    private static int mouse_event(MouseFlags flags, int x, int y,uint data=0)
-    {
-        return mouse_event((uint)(flags |MouseFlags.MOUSEEVENTF_ABSOLUTE), x, y,data,0);
-    }
-    [Flags]
-    public enum MouseFlags : uint
-    {
-        MOUSEEVENTF_MOVE = 0x0001, //移动鼠标
-        MOUSEEVENTF_LEFTDOWN = 0x0002, //模拟鼠标左键按下
-        MOUSEEVENTF_LEFTUP = 0x0004, //模拟鼠标左键抬起
-        MOUSEEVENTF_RIGHTDOWN = 0x0008, //模拟鼠标右键按下
-        MOUSEEVENTF_RIGHTUP = 0x0010, //模拟鼠标右键抬起
-        MOUSEEVENTF_MIDDLEDOWN = 0x0020, //模拟鼠标中键按下
-        MOUSEEVENTF_MIDDLEUP = 0x0040,//模拟鼠标中键抬起
-        MOUSEEVENTF_ABSOLUTE = 0x8000,// 标示是否采用绝对坐标
-        MOUSEEVENTF_WHEEL=0x0800,
-    }
-    public static void simulate(MouseFlags flags, int x, int y,uint data=0)
-    {
-        mouse_event(flags, x, y,data);
-    }
-}
 
 public static class Input
 {

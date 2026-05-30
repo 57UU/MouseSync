@@ -6,12 +6,8 @@ namespace CommonLib;
 
 public class Connection
 {
-    public Exception? Exception { get; private set; } 
+    public Exception? Exception { get; private set; }
     public readonly string EOF = DataExchange.EOF;
-/*    public Connection()
-    {
-        Console.Error.WriteLine("---O parameter constructor of Connection is only for test---");
-    }*/
     public event onError? onError;
     public static int BufferSize { set; get; } = 1024;
     public static Connection connect(string ip, int port, MessageHandler hander)
@@ -24,7 +20,6 @@ public class Connection
     public delegate void MessageHandler(string msg);
 
     public readonly TcpClient TCPclient;
-    //public CancellationTokenSource cts {  get; private set; }
     private NetworkStream stream;
     public MessageHandler messageHandler { get; set; }
     public Connection(TcpClient client, MessageHandler hander) : this(client)
@@ -32,15 +27,10 @@ public class Connection
         this.messageHandler = hander;
     }
 
-
     public Connection(TcpClient client)
-
-
     {
-        //cts = new();
         this.TCPclient = client;
         stream = client.GetStream();
-
     }
     public void StartReceive()
     {
@@ -48,7 +38,6 @@ public class Connection
     }
     public void close()
     {
-        //cts.Cancel();
         stream.Close();
         TCPclient.Close();
     }
@@ -183,7 +172,6 @@ public class ConnectionServer
             }
             catch (ThreadInterruptedException)
             {
-                //throw e;
                 break;
             }
             catch (InvalidOperationException)

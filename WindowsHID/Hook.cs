@@ -1,7 +1,5 @@
 ﻿using System.Diagnostics;
-using System.Net;
 using System.Runtime.InteropServices;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace WindowsHID;
 
