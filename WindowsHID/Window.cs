@@ -75,6 +75,8 @@ public static class Window
         public int y;
     }
     static Thread thread;
+    static IntPtr hWnd;
+
     public static void Create()
     {
 
@@ -84,7 +86,7 @@ public static class Window
     }
     public static void Loop()
     {
-        IntPtr hWnd = CreateWindowEx(
+        hWnd = CreateWindowEx(
             0,
             "Static",
             "这是一个你应该看不见的隐藏窗口",
@@ -96,14 +98,13 @@ public static class Window
             IntPtr.Zero
         );
         Hook.StartAll();
-        //ShowWindow(hWnd, SW_SHOWNORMAL);
 
         UpdateWindow(hWnd);
 
         MSG msg;
         while (GetMessage(out msg, IntPtr.Zero, 0, 0))
         {
-            
+
             TranslateMessage(ref msg);
             DispatchMessage(ref msg);
         }
@@ -112,35 +113,5 @@ public static class Window
     {
         thread.Interrupt();
         DestroyWindow(hWnd);
-    }
-     static IntPtr hWnd;
-    static void Main()
-    {
-        IntPtr hWnd = CreateWindowEx(
-            0,
-            "Static",
-            "Sample Window",
-            WS_OVERLAPPED | WS_SYSMENU | WS_CAPTION | WS_MINIMIZEBOX | WS_MAXIMIZEBOX,
-            100, 100, 400, 300,
-            IntPtr.Zero,
-            IntPtr.Zero,
-            IntPtr.Zero,
-            IntPtr.Zero
-        );
-
-        if (hWnd != IntPtr.Zero)
-        {
-            ShowWindow(hWnd, SW_SHOWNORMAL);
-            UpdateWindow(hWnd);
-
-            MSG msg;
-            while (GetMessage(out msg, IntPtr.Zero, 0, 0) )
-            {
-                TranslateMessage(ref msg);
-                DispatchMessage(ref msg);
-            }
-
-            DestroyWindow(hWnd);
-        }
     }
 }
