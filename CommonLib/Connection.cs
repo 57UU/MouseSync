@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
@@ -161,16 +161,34 @@ public class ConnectionServer : IDisposable
         if (isEnableIPv6)
         {
             Console.WriteLine("IPv6 server has been enabled");
-            server_v6 = new TcpListener(IPAddress.IPv6Any, port);
-            server_v6.Start();
-            thread_v6 = new(() => Start(server_v6));
-            thread_v6.Start();
+            try
+            {
+                server_v6 = new TcpListener(IPAddress.IPv6Any, port);
+                server_v6.Start();
+                thread_v6 = new(() => Start(server_v6));
+                thread_v6.Start();
+            }
+            catch (SocketException ex) when (ex.SocketErrorCode == SocketError.AddressAlreadyInUse)
+            {
+                Console.Error.WriteLine($"[错误] IPv6 端口 {port} 已被占用，无法启动服务器。请检查是否有其他程序在使用该端口，或关闭重复运行的实例。");
+                OnError?.Invoke(ex);
+                throw new InvalidOperationException($"端口 {port} 已被占用，服务器启动失败。", ex);
+            }
         }
 
-        server = new TcpListener(IPAddress.Any, port);
-        server.Start();
-        thread = new(() => Start(server));
-        thread.Start();
+        try
+        {
+            server = new TcpListener(IPAddress.Any, port);
+            server.Start();
+            thread = new(() => Start(server));
+            thread.Start();
+        }
+        catch (SocketException ex) when (ex.SocketErrorCode == SocketError.AddressAlreadyInUse)
+        {
+            Console.Error.WriteLine($"[错误] 端口 {port} 已被占用，无法启动服务器。请检查是否有其他程序在使用该端口，或关闭重复运行的实例。");
+            OnError?.Invoke(ex);
+            throw new InvalidOperationException($"端口 {port} 已被占用，服务器启动失败。", ex);
+        }
     }
 
 
