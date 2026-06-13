@@ -10,7 +10,7 @@ public class Entry
 {
     static Entry()
     {
-        
+
     }
     public static bool isDebug = false;
     //Entry
@@ -21,12 +21,24 @@ public class Entry
         {
             isDebug = true;
         }
-        if (Info.instance.IsHideOnStart)
+
+        var instance = ServerCore.CreateInstance();
+        try
         {
-            HideWindow.Hide();
+            instance.Launch();
+            if (Info.instance.IsHideOnStart)
+            {
+                HideWindow.Hide();
+            }
         }
-        ServerCore.start();
-        
+        catch (Exception e)
+        {
+            Console.WriteLine("发生错误: ");
+            Console.WriteLine(e.StackTrace);
+            Console.WriteLine("Press Enter to Exit");
+            Console.ReadLine();
+        }
+
 
 
     }

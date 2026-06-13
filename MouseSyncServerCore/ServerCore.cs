@@ -11,15 +11,8 @@ public class ServerCore
     int port = Info.instance.Server_Port;
     public static ServerCore instance;
     Thread broadcastThread;
-
-    public ServerCore(LogHandler logHandler)
+    public void Launch()
     {
-        this.LogHandler = logHandler;
-        hotkeyManager = new(2, switchPause);
-        instance = this;
-
-
-
         ConnectionHandler handler = conn =>
         {
             var c = new ClientPC(conn, (s, b) =>
@@ -55,7 +48,8 @@ public class ServerCore
         if (Info.instance.IsEnableBroadcast)
         {
             LogHandler("Starting Broadcast");
-            broadcastThread = new(() => {
+            broadcastThread = new(() =>
+            {
 
                 while (true)
                 {
@@ -74,10 +68,18 @@ public class ServerCore
         }
 
         LogHandler("----------Server is Ready----------");
+    }
+
+    public ServerCore(LogHandler logHandler)
+    {
+        this.LogHandler = logHandler;
+        hotkeyManager = new(2, switchPause);
+        instance = this;
         //printTable();
     }
 
-    public ServerCore():this(Console.WriteLine) {
+    public ServerCore() : this(Console.WriteLine)
+    {
 
 
     }
@@ -85,13 +87,13 @@ public class ServerCore
     {
         LogHandler("\nConnected Devices\tMachine Name\tResolution\tIP Address");
     }
-    public static void start()
+    public static ServerCore CreateInstance()
     {
-        if(ServerCore.instance != null)
+        if (ServerCore.instance != null)
         {
             throw new Exception("Unable to instance it twice");
         }
-        new ServerCore();
+        return new ServerCore();
     }
     public static void wait()
     {
@@ -131,16 +133,16 @@ public class ServerCore
     bool isPause = false;
     private void switchPause()
     {
-        
+
         isPause = !isPause;
-        Console.WriteLine((isPause ? "--Paused--" : "--Continuing--")+"----------Press Shift+F8 to change state");
+        Console.WriteLine((isPause ? "--Paused--" : "--Continuing--") + "----------Press Shift+F8 to change state");
     }
     HotkeyManager hotkeyManager;
     public void keyHandler(object? sender, KeyboardInputData e)
     {
         if (Entry.isDebug)
         {
-            Console.WriteLine(e.HookStruct.vkCode+" "+e.code);
+            Console.WriteLine(e.HookStruct.vkCode + " " + e.code);
         }
 
 
@@ -183,7 +185,7 @@ public class ServerCore
         if (isPause) return;
         List<ClientPC> snapshot;
         lock (globalLock) { snapshot = new List<ClientPC>(clients); }
-        for(int i = snapshot.Count - 1; i >= 0; i--)
+        for (int i = snapshot.Count - 1; i >= 0; i--)
         {
             snapshot[i].sendMouse(e);
         }
@@ -194,4 +196,4 @@ public class ServerCore
         connectionServer.close();
         Window.Destroy();
     }
-}  
+}
