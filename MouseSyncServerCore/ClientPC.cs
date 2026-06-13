@@ -7,19 +7,9 @@ public class ClientPC
 {
     public Connection Connection { get; private set; }
     public event EventHandler<string> onMessgeReceived;
-/*    public ClientPC(string name, string resolution, string iP)
-    {
-        Console.Error.WriteLine("ONLY FOR DEBUG");
-        //only for test
-        Name = name;
-        Resolution = resolution;
-        IP = iP;
-        ServerCore.instance.addClient(this);
-        this.Connection = new ConnectionForDemo();
-    }*/
     public ClientPC(Connection connection, EventHandler<string> onMessageReceived)
     {
-        connection.messageHander = received;
+        connection.messageHandler = received;
         this.onMessgeReceived = onMessageReceived;
         this.tcp = connection.TCPclient;
         this.IP = ((IPEndPoint)(tcp.Client.RemoteEndPoint)).Address.ToString();
@@ -90,17 +80,3 @@ public class ClientPC
     public TcpClient tcp { get; set; }
 
 }
-/*public class ConnectionForDemo : Connection
-{
-
-
-    public ConnectionForDemo(TcpClient client = null, MessageHander hander = null)
-    {
-        Console.Error.WriteLine("This Class is only for test");
-    }
-
-    public override  void send(string sb)
-    {
-        Console.WriteLine("Sending:   " + sb);
-    }
-}*/

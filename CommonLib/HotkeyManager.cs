@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CommonLib;
+﻿namespace CommonLib;
 
 public class HotkeyManager
 {
     bool[] hotkeys;
-    ThreadStart Task;
+    ThreadStart action;
     public HotkeyManager(int numKeys,ThreadStart task)
     {
         hotkeys = new bool[numKeys];
@@ -17,7 +11,7 @@ public class HotkeyManager
         {
             hotkeys[i] = false;
         }
-        Task = task;
+        action = task;
     }
     bool isAllKeyDown=false;
     /// <summary>
@@ -44,7 +38,7 @@ public class HotkeyManager
             {
                 if (isAllKeyDown)
                 {
-                    Task.Invoke();
+                    action.Invoke();
                 }
                 isAllKeyDown = false;
             }

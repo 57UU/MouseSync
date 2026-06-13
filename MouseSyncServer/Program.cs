@@ -1,7 +1,7 @@
 ﻿using MouseSyncServerCore;
 using WindowsHID;
 
-public class Programe
+public class Program
 {
     public static void Main(string[] args)
     {

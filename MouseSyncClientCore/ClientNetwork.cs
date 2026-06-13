@@ -1,14 +1,6 @@
 ﻿
 using CommonLib;
 using MouseSyncClientCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using WindowsHID;
 
 namespace MouseSync.Client;
@@ -52,7 +44,7 @@ public class ClientNetwork
     }
     private void receive(string msg)
     {
-        if (Programe.isDebug)
+        if (Program.isDebug)
         {
             LogHandler("Received: " + msg);
         }
@@ -73,94 +65,81 @@ public class ClientNetwork
         }
     
     }
-    public static  bool isSimulate=true;
+    public static bool isSimulate = true;
     private void handleMouseEvent(string[] msg)
     {
-        int button = int.Parse(msg[1]);
-        int x = int.Parse(msg[2]);
-        int y = int.Parse(msg[3]);
-        var mouseData = int.Parse(msg[4]);
+        if (msg.Length < 5 || !int.TryParse(msg[1], out int button)
+            || !int.TryParse(msg[2], out int x) || !int.TryParse(msg[3], out int y)
+            || !int.TryParse(msg[4], out int mouseData))
+        {
+            LogHandler("Error: invalid mouse event data");
+            return;
+        }
+
         MOUSEINPUT mouseInput = new();
         mouseInput.dy = y;
         mouseInput.dx = x;
         mouseInput.dwFlags = MOUSEEVENTF.MOUSEEVENTF_MOVE;
 
-        if (button==(int)MouseMessagesHook.WM_MOUSEWHEEL) {
-            if (Programe.isDebug)
+        if (button == (int)MouseMessagesHook.WM_MOUSEWHEEL)
+        {
+            if (Program.isDebug)
             {
                 LogHandler("Simulate wheel");
             }
-
-            //InputForMouse.simulate(InputForMouse.Flags.MOUSEEVENTF_WHEEL, x, y,mouseData);
             mouseInput.dwFlags = MOUSEEVENTF.MOUSEEVENTF_WHEEL;
-            mouseInput.mouseData = mouseData>>16;
-
-           
+            mouseInput.mouseData = mouseData >> 16;
         }
         else
         {
-            if (Programe.isDebug)
+            if (Program.isDebug)
             {
                 LogHandler("simulate btn press");
             }
-
-
-            //InputForMouse.simulate(DataExchange.MOUSE_KEY_MAP[button], x, y);
             if (DataExchange.MOUSE_KEY_MAP.ContainsKey(button))
             {
                 mouseInput.dwFlags = DataExchange.MOUSE_KEY_MAP[button];
             }
             else
             {
-                LogHandler("Error:can not prase :" + button);
+                LogHandler("Error: cannot parse button " + button);
             }
         }
         if (isSimulate)
         {
             Input.sendMouseInput(mouseInput);
         }
-        
-
     }
-/*    [Obsolete]
-    private void handleMouseEvent_obsolete(string[] msg)
-    {
-        int button = int.Parse(msg[1]);
 
-        int x= int.Parse(msg[2]);
-        int y= int.Parse(msg[3]);
-        var mouseData= int.Parse(msg[4]);
-        MOUSEINPUT mouse_input=new MOUSEINPUT();
-        mouse_input.dy = y;
-        mouse_input.dx = x; 
-        mouse_input.mouseData = mouseData;
-        Input.sendMouseInput(mouse_input);
-    }*/
     private void handleKeyboardEvent(string[] msg)
     {
-        int code = int.Parse(msg[1]);
-        var vkcode = ushort.Parse(msg[2]);
-        var scanCode = ushort.Parse(msg[3]);
-        if(DataExchange.KEYEVENT_MAP.ContainsKey(code))
+        if (msg.Length < 4 || !int.TryParse(msg[1], out int code)
+            || !ushort.TryParse(msg[2], out ushort vkcode)
+            || !ushort.TryParse(msg[3], out ushort scanCode))
         {
-            if(Programe.isDebug)
+            LogHandler("Error: invalid keyboard event data");
+            return;
+        }
+
+        if (DataExchange.KEYEVENT_MAP.ContainsKey(code))
+        {
+            if (Program.isDebug)
             {
                 LogHandler($"Key receive: {vkcode}");
             }
-
             var flag = DataExchange.KEYEVENT_MAP[code];
-            var input = new Input.KEYBDINPUT() {
+            var input = new Input.KEYBDINPUT()
+            {
                 wVk = vkcode,
                 wScan = scanCode,
                 dwFlags = (uint)flag
             };
-            if(isSimulate)
-            Input.sendKeyboardInput(input);
+            if (isSimulate)
+                Input.sendKeyboardInput(input);
         }
         else
         {
             LogHandler("Unknown Key");
         }
-        
     }
 }

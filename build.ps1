@@ -11,7 +11,8 @@ if (Test-Path $vswhere) {
     $vsdevcmd = Join-Path $vsPath "Common7\Tools\VsDevCmd.bat"
     if (Test-Path $vsdevcmd) {
         # 导入 VS 开发环境变量
-        $envDump = cmd /c "`"$vsdevcmd`" -no_logo && set"
+        $cmdExe = Join-Path $env:SystemRoot "System32\cmd.exe"
+        $envDump = & $cmdExe /c "`"$vsdevcmd`" -no_logo && set"
         foreach ($line in $envDump) {
             if ($line -match '^([^=]+)=(.*)$') {
                 [Environment]::SetEnvironmentVariable($Matches[1], $Matches[2], "Process")
