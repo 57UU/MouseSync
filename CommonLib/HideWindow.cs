@@ -25,7 +25,8 @@ public static class HideWindow
         }
         else
         {
-            throw new Exception("can not hide");
+            //throw new Exception("can not hide");
+            Console.WriteLine("警告：无法隐藏窗口，最新版Windows终端可能会导致这个问题");
         }
     }
 
